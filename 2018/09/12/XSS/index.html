@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="锅哥">
+    
+    <meta name="description" content="不会测试的程序员不是一个好的攻城狮">
+    
+    
+    
+    
+    
+    
+    <title>XSS | 锅哥的日常</title>
+    <!-- inject:style -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <!-- endinject -->
+    <style>
+        .cube-loading {
+            top: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('/images/lg/loading.gif') no-repeat center center;
+            background-color: rgba(0,0,0,.7);
+        }
+
+        .cube-loading.out {
+            display: none;
+        }
+
+        .cube-loading:before {
+            display: block;
+            content: 'Loading';
+            position: relative;
+            width: 100%;
+            top: 50%;
+            right: -50%;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .cube-loading:before {
+                font-size: 1.2em;
+                transform: translate(-24px,20px);
+                -webkit-transform: translate(-24px,20px);
+                -o-transform: translate(-24px,20px);
+                -ms-transform: translate(-24px,20px);
+            }
+        }
+
+        @media(min-width: 768px) {
+            .cube-loading:before {
+
+            }
+        }
+    </style>
+    
+</head>
+<body>
+<div class="cube-body">
+    <nav id="cube-top-memu" class="cube-menu">
+    <ul class="cube-menu-collapse">
+        
+        <li>
+            <i class="cube-icon cube-icon-home" aria-hidden="true"></i>
+            <a href="/">首页</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-archive" aria-hidden="true"></i>
+            <a href="/archives">归档</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-categories" aria-hidden="true"></i>
+            <a href="/categories">分类</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-tags" aria-hidden="true"></i>
+            <a href="/tags">标签</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-about" aria-hidden="true"></i>
+            <a href="/about-me">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+
+    <header class="cube-header" id="cube-header">
+    <img src=" https://www.f4guo.top/images/1.jpg " alt="头部背景图片">
+    
+    <div class="cube-type">
+        <span class="cube-typed-title">锅哥的日常</span>
+        <span class="cube-typed-cursor">|</span>
+    </div>
+    
+</header>
+
+    <style>
+        nav.cube-menu:before {
+            content: '';
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 44px;
+        
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+        
+            z-index: -1;
+            background-image: url('https://www.f4guo.top/images/1.jpg');
+            background-repeat: no-repeat;
+            background-position: center 44px;
+            background-size: cover;
+            background-color: transparent;
+        }
+
+        header.cube-background.cube-header-background {
+            visibility: hidden;
+            background-image: url('https://www.f4guo.top/images/1.jpg');
+            background-position: center 0;
+        }
+    </style>
+    <header class="cube-background cube-header-background">
+        
+        <div class="cube-type">
+            <span class="cube-typed-title">锅哥的日常</span>
+            <span class="cube-typed-cursor">|</span>
+        </div>
+        
+    </header>
+    <div class="load-header-background"></div>
+    <script>
+        (function (window) {
+
+            window.headerModule = {}
+            window.headerModule.image = {
+                width: '500',
+                height: '346'
+            }
+
+        })(window)
+    </script>
+    
+    <div class="cube-content">
+        <div class="cube-left">
+            <div class="cube-article">
+    <h1 class="title">XSS</h1>
+    
+    <div class="cube-article-header">
+        <div class="cube-article-date">
+            <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+            <!-- moment.js对象 -->
+            2018-09-12
+        </div>
+        <div class="cube-article-tags">
+    <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+    
+    <a href="/tags/web安全/">#web安全</a>
+    
+</div>
+    </div>
+    
+    <div class="cube-article-content cube-markdown">
+        
+        <h2 id="0x00-什么是XSS"><a href="#0x00-什么是XSS" class="headerlink" title="0x00 什么是XSS"></a>0x00 什么是XSS</h2><p>CSS（Cross Site Scripting，跨站脚本攻击），为了和层叠样式表（Cascading Style Sheet，CSS）区分，所以改为叫XSS。XSS攻击能让攻击者在受害者的浏览器中执行脚本，并劫持用户会话、破坏网络或将用户重定向到其他恶意的站点。</p>
+<h2 id="0x01-XSS原理"><a href="#0x01-XSS原理" class="headerlink" title="0x01 XSS原理"></a>0x01 XSS原理</h2><p>当应用程序的网页中包含不可信的，未经恰当验证或转义的数据时，或者使用可以创建HTML或JavaScript的浏览器API更新现有的网页时，就会出现XSS漏洞。举个栗子，当你在一些网站评论或留言的时候，你输入的不是正常的留言，而是一些恶意的HTML或JavaScript代码，刚好这个网站的安全措施做得没那么好，对于用户输入的数据没有进行过滤、转义等一些安全处理，然后你的恶意代码就被浏览器执行或者上传到数据库了。</p>
+<h2 id="0x02-XSS分类"><a href="#0x02-XSS分类" class="headerlink" title="0x02 XSS分类"></a>0x02 XSS分类</h2><p>分三种XSS类型，通常针对的都是用户的浏览器。</p>
+<h3 id="反射型XSS"><a href="#反射型XSS" class="headerlink" title="反射型XSS"></a>反射型XSS</h3><p>应用程序或API包括未经验证和未经转义的用户输入，作为HTML输出的一部分。一个成功的攻击可以让攻击者在受害者的浏览器中执行任意的HTML和JavaScript。通常用户将需要与指向攻击者控制页面的某些恶意链接进行交互，例如恶意漏洞网站，广告等。</p>
+<h3 id="存储型XSS"><a href="#存储型XSS" class="headerlink" title="存储型XSS"></a>存储型XSS</h3><p>应用程序或API间未“消毒”的的用户输入存储到了数据库，在后期在其他用户的或管理员的页面显示出来。存储型XSS一般被认为是高危或严重的漏洞。</p>
+<h3 id="基于DOM的XSS"><a href="#基于DOM的XSS" class="headerlink" title="基于DOM的XSS"></a>基于DOM的XSS</h3><p>DOM的全称为Document Object Model,即文档对象模型。基于DOM型的XSS是不需要与服务器交互的，它只发生在客户端处理数据阶段。这种类型的XSS会动态的将攻击者可控的内容加入页面的JavaScript框架、单页面程序会API存在这类型的漏洞。反射型和存储型XSS是后端（服务器端）代码漏洞造成的，payload在响应页面中，在DOM XSS中，payload不在服务器发出的HTTP响应页面中，当客户端脚本运行时（渲染页面时），payload才会加载到脚本中执行。</p>
+<h2 id="0x03-XSS预防"><a href="#0x03-XSS预防" class="headerlink" title="0x03 XSS预防"></a>0x03 XSS预防</h2><p>1.使用设计上就会自动编码来解决XSS问题的框架，如：Ruby 3.0或React JS。了解每个框架的XSS保护的局限性，并适当的处理未覆盖的用例。<br>2.为了避免反射型XSS和存储型XSS漏洞，最好的办法就是根据HTML输出的上下文（包括：主体、属性、JavaScript、CSS或URL）对所有不可信的HTTP请求数据进行恰当的过滤、转义。<br>3.在客户端修改浏览器文档时，为了避免DOM型XSS攻击，最好的选择是实施上下文敏感数据编码。如果这种情况不能避免，也可以采用类似上下文敏感的的转义技术应用浏览器的API。<br>4.使用内容安全策略（CSP）是对抗XSS的深度防御策略。如果不存在可以通过本地文件放置恶意代码的其他漏洞（如：路径遍历覆盖和允许在网络中传输的易受攻击的库），该策略是有效的。</p>
+<h4 id="上下文敏感（context-sensitive）"><a href="#上下文敏感（context-sensitive）" class="headerlink" title="上下文敏感（context-sensitive）"></a>上下文敏感（context-sensitive）</h4><p>在过程间分析（Interprocedural Analysis）时，考虑函数调用的上下文信息。一个子过程或函数可能会被多个过程调用，那么在不同的过程调用它的时候，对于传给它的实际参数或当时的全局变量有可能会不同，这些被称之为上下文，上下文敏感是考虑了这些不同。</p>
+<h4 id="CSP"><a href="#CSP" class="headerlink" title="CSP"></a>CSP</h4><p>内容安全策略，为了缓解很大一部分潜在的跨站脚本问题，浏览器的扩展程序系统引入了内容安全策略（CSP）的一般概念。这将引入一些相当严格的策略，会使扩展程序在默认情况下更加安全，开发者可以创建并强制应用一些规则，管理网站允许加载的内容。CSP以白名单的机制对网站加载或执行的资源起作用。在网页中，这样的策略通过 HTTP 头信息或者 meta 元素定义。CSP虽然提供了强大的安全保护，但是他也造成了如下问题：Eval及相关函数被禁用、内嵌的JavaScript代码将不会执行、只能通过白名单来加载远程脚本。这些问题阻碍CSP的普及，如果要使用CSP技术保护自己的网站，开发者就不得不花费大量时间分离内嵌的JavaScript代码和做一些调整。[来源于百度百科]</p>
+<h3 id="对于DOM的个人理解"><a href="#对于DOM的个人理解" class="headerlink" title="对于DOM的个人理解"></a>对于DOM的个人理解</h3><p>因为DOM Tree，JavaScript可以通过DOM节点对HTML或XML文档进行修改，因为JavaScript要获得HTML或XML里的元素访问的入口，就必须通过DOM对象的属性或方法。DOM技术使得用户页面可以动态地变化，如可以动态地显示或隐藏一个元素，改变它们的属性，增加一个元素等，Dom技术使得页面的交互性大大地增强。</p>
+<p>参考文献：OWASP TOP 10 2017 10项严重的WEB应用程序安全风险</p>
+
+    </div>
+</div>
+
+<div class="cube-article-nav">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2018/09/22/常见的XSS利用场景/">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                常见的XSS利用场景
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+<!-- TODO 根据theme.comment的内容进行入口选择 -->
+
+
+
+        </div>
+        <div class="cube-right">
+            
+
+<div class="cube-search cube-sidebar" id="cube-search">
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="cube-search-input" id="cube-search-input">
+        <i class="cube-icon cube-icon-search cube-search-submit" aria-hidden="true"></i>
+    </div>
+    <!-- TODO 通过给window赋一个全局变量，通过脚本赋值 -->
+</div>
+<script>
+    (function (window) {
+        'use strict';
+        window.searchModule = {}
+        window.searchModule.JSONUrl = '/content.json'
+        window.searchModule.rootUrl = '/'
+    })(window)
+</script>
+<div class="cube-search-form">
+    <div class="cube-search-control">
+        <input type="text" placeholder="Search" class="search-input">
+        <a class="close-button">
+            <i class="cube-icon cube-close" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="cube-search-result"></div>
+</div>
+
+
+<div class="cube-author cube-sidebar" id="cube-author">
+    
+    
+    <span>锅哥</span>
+    
+    
+    <a title="不会测试的程序员不是一个好的攻城狮">不会测试的程序员不是一个好的攻城狮</a>
+    
+    <div class="count">
+        <a class="count articles"><span>6</span>Article</a>
+        <a class="count tags"><span>3</span>Tags</a>
+        <a class="count categories"><span>3</span>Categories</a>
+    </div>
+</div>
+
+
+
+
+
+<div class="cube-recent-posts cube-sidebar" id="cube-recent-posts">
+    <div class="title">
+        <a>Recent Posts</a>
+    </div>
+    <ul class="list">
+        
+        
+        <li>
+            <!-- TODO 如果文章要显示图片，那么在front-matter上添加preview属性(url or path) -->
+            
+            <div class="normal">
+                <p class="index first">
+                    <span>1</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/11/11/CDN下的真实IP/" title="CDN下的真实IP">CDN下的真实IP</a>
+                </p>
+            </div>
+            
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>2</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/10/09/hello-world/" title="Hello Guys!!!">Hello Guys!!!</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>3</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/10/03/json劫持/" title="json劫持">json劫持</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>4</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/10/03/正则表达式模式/" title="正则表达式模式">正则表达式模式</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>5</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/09/22/常见的XSS利用场景/" title="常见的XSS利用场景">常见的XSS利用场景</a>
+                </p>
+            </div>
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-categories cube-sidebar" id="cube-categories">
+    <div class="title">
+        <a href="/categories">Categories</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/信息安全/">#信息安全</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/瞎扯淡/">#瞎扯淡</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/编程/">#编程</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-tagcloud cube-sidebar" id="cube-tagcloud">
+    <div class="title">
+        <a href="/tags">Tagcloud</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/web安全/">#web安全</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/tags/日常/">#日常</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/python/">#python</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-links cube-sidebar" id="cube-links">
+    <div class="title">
+        <a>Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
+            
+            <a href="https://github.com/fqguo/fqguo.github.io" target="_blank">GitHub</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="/images/CSDN.jpg">
+            
+            <a href="https://blog.csdn.net/qq_gfq?t=1&amp;orderby=UpdateTime" target="_blank">CSDN</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-friend-links cube-sidebar" id="cube-friend-links">
+    <div class="title">
+        <a>Friend Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="https://www.f4guo.top/images/tx.jpg">
+            <a href="https://www.f4guo.top" target="_blank">锅哥的日常</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://stickman.top/imagess/lufei.jpg">
+            <a href="http://stickman.top" target="_blank">火柴人的小窝</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+    </div>
+</div>
+<footer class="cube-footer">
+    
+© 2018 锅哥
+
+<br>
+Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.&nbsp;Theme by <a href="https://github.com/ZEROKISEKI" target="_blank">AONOSORA</a>
+
+</footer>
+<!-- inject:script -->
+<script src="/js/script.js"></script>
+<!-- endinject -->
+<div class="cube-loading out"></div>
+</body>
+</html>

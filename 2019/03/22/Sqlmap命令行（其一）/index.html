@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8">
+<title>Sqlmap命令行（其一） - 锅哥的日常</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+
+
+    <meta name="description" content="人对于周围的失去看得是多么不清楚，常常必得从远方来一个人告诉我们周围的真面目。所以人必须把万物从自己身边推开，以便后来善于取用较为正确而平静的方式，以稀少的亲切和敬畏的距离来同他们接近。  ——里克尔《给青年诗人的信》   0x00 前言本文转载自werner-wiki的博客，便于参考学习（侵权删）原文地址：https:&#x2F;&#x2F;blog.csdn.net&#x2F;wn314&#x2F;article&#x2F;details&#x2F;">
+<meta name="keywords" content="工具手册">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sqlmap命令行（其一）">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;2019&#x2F;03&#x2F;22&#x2F;Sqlmap%E5%91%BD%E4%BB%A4%E8%A1%8C%EF%BC%88%E5%85%B6%E4%B8%80%EF%BC%89&#x2F;index.html">
+<meta property="og:site_name" content="锅哥的日常">
+<meta property="og:description" content="人对于周围的失去看得是多么不清楚，常常必得从远方来一个人告诉我们周围的真面目。所以人必须把万物从自己身边推开，以便后来善于取用较为正确而平静的方式，以稀少的亲切和敬畏的距离来同他们接近。  ——里克尔《给青年诗人的信》   0x00 前言本文转载自werner-wiki的博客，便于参考学习（侵权删）原文地址：https:&#x2F;&#x2F;blog.csdn.net&#x2F;wn314&#x2F;article&#x2F;details&#x2F;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;sqlmap_s.png">
+<meta property="og:updated_time" content="2019-03-25T15:10:42.622Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;sqlmap_s.png">
+
+
+
+
+
+<link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.ico" alt="Sqlmap命令行（其一）" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">主页</a>
+                
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                
+                <a class="navbar-item"
+                href="/categories">分类</a>
+                
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                
+                <a class="navbar-item"
+                href="/about">关于</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;" target="_blank" rel="noopener">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-03-22T09:01:57.000Z">2019-03-22</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 8083 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Sqlmap命令行（其一）
+            
+        </h1>
+        <div class="content">
+            <blockquote>
+<p><font color="#87CEFF" size="2">人对于周围的失去看得是多么不清楚，常常必得从远方来一个人告诉我们周围的真面目。所以人必须把万物从自己身边推开，以便后来善于取用较为正确而平静的方式，以稀少的亲切和敬畏的距离来同他们接近。  ——里克尔《给青年诗人的信》 </font></p>
+</blockquote>
+<h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h3><p>本文转载自werner-wiki的博客，便于参考学习（侵权删）原文地址：<a href="https://blog.csdn.net/wn314/article/details/78872828。" target="_blank" rel="noopener">https://blog.csdn.net/wn314/article/details/78872828。</a></p>
+<h3 id="0x01-Sqlmap是什么"><a href="#0x01-Sqlmap是什么" class="headerlink" title="0x01 Sqlmap是什么"></a>0x01 Sqlmap是什么</h3><p>Sqlmap是开源的自动化SQL注入工具，由Python写成，具有如下特点：</p>
+<pre><code>完全支持MySQL、Oracle、PostgreSQL、Microsoft SQL Server、Microsoft Access、IBM DB2、SQLite、Firebird、Sybase、SAP MaxDB、HSQLDB和Informix等多种数据库管理系统。
+完全支持布尔型盲注、时间型盲注、基于错误信息的注入、联合查询注入和堆查询注入。
+在数据库证书、IP地址、端口和数据库名等条件允许的情况下支持不通过SQL注入点而直接连接数据库。
+支持枚举用户、密码、哈希、权限、角色、数据库、数据表和列。
+支持自动识别密码哈希格式并通过字典破解密码哈希。
+支持完全地下载某个数据库中的某个表，也可以只下载某个表中的某几列，甚至只下载某一列中的部分数据，这完全取决于用户的选择。
+支持在数据库管理系统中搜索指定的数据库名、表名或列名
+当数据库管理系统是MySQL、PostgreSQL或Microsoft SQL Server时支持下载或上传文件。
+当数据库管理系统是MySQL、PostgreSQL或Microsoft SQL Server时支持执行任意命令并回现标准输出。</code></pre><a id="more"></a>
+<h3 id="0x02-Sqlmap安装"><a href="#0x02-Sqlmap安装" class="headerlink" title="0x02 Sqlmap安装"></a>0x02 Sqlmap安装</h3><p>Sqlmap的开源项目，托管在github，最简单的安装方式便是使用git，执行如下命令：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="hljs-built_in">clone</span> https://github.com/sqlmapproject/sqlmap.git</span><br></pre></td></tr></table></figure>
+<p>片刻后命令执行完毕，可以看到当前目录中多了一个名为“sqlmap”的目录，<br>该目录中保存着Sqlmap的Python源码、配置文件和文档。<br>由于Python是解释执行的语言，不用编译，所以至此最新版的Sqlmap已经安装完成。<br>cd到“sqlmap”目录中，用命令“python sqlmap”启动Sqlmap，如下图所示：<br><img src="/images/paperimage/sqlmap_s.png" alt><br>Sqlmap安装完成,当想要更新Sqlmap时，进入到“sqlmap”目录中执行命令“git pull”即可。</p>
+<h3 id="0x03-输出级别-Output-verbosity"><a href="#0x03-输出级别-Output-verbosity" class="headerlink" title="0x03 输出级别(Output verbosity)"></a>0x03 输出级别(Output verbosity)</h3><p><strong>参数：-v</strong><br>Sqlmap的输出信息按从简到繁共分为7个级别（和葫芦娃一样多），依次为0、1、2、3、4、5和6。使用参数“-v &lt;级别&gt;”来指定某个等级，如使用参数“-v 6”来指定输出级别为6。默认输出级别为1。各个输出级别的描述如下：</p>
+<pre><code>0：只显示Python的tracebacks信息、错误信息[ERROR]和关键信息[CRITICAL]；
+1：同时显示普通信息[INFO]和警告信息[WARNING]；
+2：同时显示调试信息[DEBUG]；
+3：同时显示注入使用的攻击荷载；
+4：同时显示HTTP请求；
+5：同时显示HTTP响应头；
+6：同时显示HTTP响应体。</code></pre><p>各个级别输出的信息详细到什么程度，还需要自己尝试下，亲眼见到，才会有明确的认识。</p>
+<h3 id="0x04-指定目标"><a href="#0x04-指定目标" class="headerlink" title="0x04 指定目标"></a>0x04 指定目标</h3><p>Sqlmap运行时必须指定至少一个目标，支持一次指定多个目标。有以下几种指定目标的方式：</p>
+<p><strong><em>1.直接连接数据库</em></strong><br><strong>参数：-d</strong><br>使用参数“-d”直接连接数据库，该参数后跟一个表示数据库的字符串，该字符串有以下两种格式：<br>(1).当数据库管理系统是MySQL、Oracle、Microsoft SQL Server或PostgreSQL等时格式为：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DBMS://USER:PASSWORD@DBMS_IP:DBMS_PORT/DATABASE_NAME</span><br></pre></td></tr></table></figure>
+<p>(2).当数据库管理系统是SQLite、Microsoft Access或Firebird等时格式为：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DBMS://DATABASE_FILEPATH</span><br></pre></td></tr></table></figure>
+
+<p>我用如下命令连接装在本机上的Mysql：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -d <span class="hljs-string">"mysql://root:root@127.0.0.1:3306/DISSchool"</span></span><br></pre></td></tr></table></figure>
+
+<p>却出现了错误，错误为：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[CRITICAL] sqlmap requires <span class="hljs-string">'python-pymysql'</span> third-party library <span class="hljs-keyword">in</span> order to directly connect to the DBMS <span class="hljs-string">'MySQL'</span>. You can download it from <span class="hljs-string">'https://github.com/petehunt/PyMySQL/'</span>. Alternative is to use a package <span class="hljs-string">'python-sqlalchemy'</span> with support <span class="hljs-keyword">for</span> dialect <span class="hljs-string">'mysql'</span> installed</span><br></pre></td></tr></table></figure>
+
+<p>意思是我没有安装Python连接Mysql用的第三方库python-pymysql。虽然我安装了python-mysqldb可以使Python连接Mysql，但显然Sqlmap使用的是python-pymysql而不是python-mysqldb。使用如下命令安装python-pymysql：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="hljs-built_in">clone</span> https://github.com/petehunt/PyMySQL/</span><br><span class="line"><span class="hljs-built_in">cd</span> PyMySQL/</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure>
+
+<p>安装好python-pymysql后再执行命令：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -d <span class="hljs-string">"mysql://root:root@127.0.0.1:3306/DISSchool"</span></span><br></pre></td></tr></table></figure>
+
+<p>这次没有报错，成功的连接到了数据库。只是除了检测数据库确实是Mysql版本号大于等于5.0.0之外便什么都没有做。让Sqlmap做点什么需要用其他参数指定，这些参数我们稍晚些再学习。</p>
+<p><strong><em>2.指定目标URL</em></strong><br><strong>参数：-u 或 –url</strong><br>使用参数“-u”或“–url”指定一个URL作为目标，该参数后跟一个表示URL的字符串，可以是http协议也可以是https协议，还可以指定端口，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.56.102:8080/user.php?id=0"</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>3.从Burp或WebScarab的代理日志中解析目标</em></strong><br><strong>参数：-l</strong><br>使用参数“-l”指定一个Burp或WebScarab的代理日志文件，Sqlmap将从日志文件中解析出可能的攻击目标，并逐个尝试进行注入。该参数后跟一个表示日志文件的路径。<br>WebScarab我没有用过，Burp倒是常常会用。Burp默认不记录日志，想要记录日志需要手动开启，设置方法如下图所示：<br>![设置Burp日志]<br>只用勾选代理中的请求数据就足够了，日志文件路径可随意设置，这里我设置日志文件名为proxy.log，放在用户主目录中。<br>设置浏览器的代理为Burp，随便浏览几个网页后发现proxy.log竟然已经有70多K大，查看其内容，部分输出如下：</p>
+<pre><code>werner@Yasser:~$ more proxy.log
+======================================================
+7:22:52 PM  http://ocsp.digicert.com:80  [117.18.237.29]
+======================================================
+POST / HTTP/1.1
+Host: ocsp.digicert.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-SG,en-US;q=0.7,en;q=0.3
+Accept-Encoding: gzip, deflate
+Content-Length: 83
+Content-Type: application/ocsp-request
+DNT: 1
+Connection: close
+
+0Q0O0M0K0I0   +
+�ǝ��Pr�Tz�
+======================================================
+
+
+======================================================
+7:23:00 PM  http://blog.csdn.net:80  [47.95.49.160]
+======================================================
+GET /pyufftj/article/details/21469201 HTTP/1.1
+Host: blog.csdn.net
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+...</code></pre><p>可以看到该日志文件不仅记录了GET参数，还记录了cookie和POST参数。现在使用如下命令让Sqlmap解析该日志文件，自动寻找目标，检测注入漏洞：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -l ../proxy.log</span><br></pre></td></tr></table></figure>
+<p>注意日志文件的路径要写正确。执行该命令时，每找到一个可能的攻击目标，Sqlmap都会询问是否要检测该目标。，默认回答为“Y”，想要测试该目标，直接按回车键就行。<br>当日志较大时会有很多可能目标，虽然有询问机制但依旧麻烦，因为不能一路按回车而要进行判断。若是可以对日志进行过滤就好了！确实是可以的，参数为“–scope”，详情见“五.18”。</p>
+<p><strong><em>4.从站点地图文件中解析目标</em></strong><br><strong>参数：-x</strong><br>为便于搜索引擎收录，许多网站专门为搜索引擎生成了xml格式的站点地图，如百度Sitemap支持xml格式。Sqlmap可以直接解析xml格式的站点地图，从中提取攻击目标，对一个网站全方位无死角地进行注入检测，此时使用的参数是“-x”，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -x http://www.6eat.com/sitemap.xml</span><br></pre></td></tr></table></figure>
+<p>但执行该命令的结果却是：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[WARNING] no usable links found (with GET parameters)</span><br></pre></td></tr></table></figure>
+<p>没有找到有GET参数的可用链接。就我有限的经验而言，站点地图中的URL很少包含GET参数，POST参数就更不用说了。所以Sqlmap的这一功能似乎有些鸡肋。</p>
+<p><strong><em>5.从文本文件中解析目标</em></strong><br><strong>参数：-m</strong><br>参数“-u”一次只能指定一个URL，若有多个URL需要测试就显得很不方便，我们可用将多个URL以一行一个的格式保存在文本文件中，然后使用参数“-m”，后跟该文本文件路径，让Sqlmap依次读取文件中的URL作为攻击目标。</p>
+<p>如我们有文件url.txt，内容为：</p>
+<pre><code>www.target1.com/vuln1.php?q=foobar
+www.target2.com/vuln2.asp?id=1
+www.target3.com/vuln3/id/1*</code></pre><p>然后可用使用如下命令让Sqlmap测试这些URL是否存在注入漏洞：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -m url.txt</span><br></pre></td></tr></table></figure>
+<p>同样,执行该命令时，Sqlmap会很贴心地一个个询问：“do you want to test this URL?”</p>
+<p><strong><em>6.从文件载入HTTP请求</em></strong><br><strong>参数：-r</strong><br>可以将一个HTTP请求保存在文件中，然后使用参数“-r”加载该文件，Sqlmap会解析该文件，从该文件分析目标并进行测试。<br>设有如下所示的HTTP请求保存在文件get.txt中：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GET /user.php?id=1 HTTP/1.1</span><br><span class="line">Host: 192.168.56.101:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-SG,en-US;q=0.7,en;q=0.3</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">DNT: 1</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br></pre></td></tr></table></figure>
+<p>则使用如下命令让Sqlmap解析该文件，以该文件中HTTP请求目标为攻击目标进行测试：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -r get.txt</span><br></pre></td></tr></table></figure>
+<p><strong><em>7.将Google搜索结果作为攻击目标</em></strong><br><strong>参数：-g</strong><br>Sqlmap能自动获取Google搜索的前一百个结果，对其中有GET参数的URL进行注入测试。当然，所处的网络环境要能访问Google才行。下面是Sqlmap手册中“-g”参数的例子：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -g <span class="hljs-string">"inurl:\".php?id=1\""</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>8.从配置文件中载入攻击目标</em></strong><br><strong>参数：-c</strong><br>使用参数“-c”指定一个配置文件（如：sqlmap.conf），Sqlmap会解析该配置文件，按照该配置文件的配置执行动作。配置文件中可以指定攻击目标，实际上除了攻击目标外，配置文件还可以指定各种参数的值。</p>
+<p>Sqlmap的按照目录中有一个名为sqlmap.conf的文件，该文件是配置文件的模板，看看该文件内容，就能明白配置文件是什么意思了。</p>
+<h3 id="0x05-请求"><a href="#0x05-请求" class="headerlink" title="0x05 请求"></a>0x05 请求</h3><p>HTTP是一个复杂的协议。HTTP请求有很多种方法（method），可以在不同位置（GET、POST、cookie和User-Agent等）携带不同参数。往往只有在特定位置携带了特定参数以特定方法发起的请求才是合法有效的请求。Sqlmap运行时除了需要指定目标，有时还需要指定HTTP请求的一些细节。下面这些参数都用于指定HTTP请求细节。</p>
+<p><strong><em>1.HTTP方法</em></strong><br><strong>参数：–method</strong><br>一般来说，Sqlmap能自动判断出是使用GET方法还是POST方法，但在某些情况下需要的可能是PUT等很少见的方法，此时就需要用参数“–method”来指定方法。如：“–method=PUT”。</p>
+<p><strong><em>2.POST数据</em></strong><br><strong>参数：–data</strong><br>该参数指定的数据会被作为POST数据提交，Sqlmap也会检测该参数指定数据是否存在注入漏洞。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.56.102:8080/user.php"</span> --data=<span class="hljs-string">"id=0&amp;name=werner"</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>3.指定分隔符</em></strong><br><strong>参数：–param-del</strong><br>上一个例子中“–data”的数据“id=0&amp;name=werner”其实由两个部分组成：“id=0”和“name=werner”，默认地以“&amp;”作为分隔符。我们可以使用“–param-del”来指定分隔符，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.56.102:8080/user.php"</span> --data=<span class="hljs-string">"id=0;name=werner"</span> --param-del=<span class="hljs-string">";"</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>4.cookie</em></strong><br><strong>参数：–cookie、–cookie-del、–drop-set-cookie和–load-cookies</strong><br>有两种情况会用到这些参数：</p>
+<pre><code>要测试的页面只有在登录状态下才能访问，登录状态用cookie识别
+想要检测是否存在cookie注入</code></pre><p>当“–level”设置为2或更高时，Sqlmap会检测cookie是否存在注入漏洞，关于“–level”的更多信息见下文。</p>
+<p><em>(1).“–cookie”和“–cookie-del”</em><br>在浏览器中登录目标网站后复制出维持登录状态的cookie，用参数“–cookie”来指定这些cookie，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.56.102:8080/user.php"</span> --cookie <span class="hljs-string">"JSESSIONID=E5D6C8C81;NAME=werner;"</span></span><br></pre></td></tr></table></figure>
+<p>与POST参数不同，cookie默认的分隔符为“;”，想要指定cookie中的分隔符，使用参数“–cookie-del”。</p>
+<p><em>(2).“–drop-set-cookie”</em><br>若HTTP响应头中有“Set-Cookie”，Sqlmap会自动设置“Set-Cookie”设置的cookie，并对这些cookie进行检测。若不想让Sqlmap这么做，添加参数“–drop-set-cookie”即可，这样，Sqlmap会忽略“Set-Cookie”。</p>
+<p><em>(3).“–load-cookies”</em><br>该参数用于从文件中载入Netscape或wget格式的cookie。</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">wget可以保存和载入cookie，示例如下：</span><br><span class="line"></span><br><span class="line">  # Log in to the server.  This can be done only once.</span><br><span class="line">  wget --save-cookies cookies.txt \</span><br><span class="line">       --post-data &apos;user=foo&amp;password=bar&apos; \</span><br><span class="line">       http://server.com/auth.php</span><br><span class="line">     </span><br><span class="line">  # Now grab the page or pages we care about.</span><br><span class="line">  wget --load-cookies cookies.txt \</span><br><span class="line">       -p http://server.com/interesting/article.php</span><br></pre></td></tr></table></figure>
+<p><strong><em>5.User-Agent</em></strong><br><strong>参数：–user-agent和–random-agent</strong><br>默认情况下Sqlmap发送的HTTP请求中的User-Agent值为：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap/1.0-dev-xxxxxxx (http://sqlmap.org)</span><br></pre></td></tr></table></figure>
+<p>使用参数“–user-agent”可以指定一个User-Agent值。但正常的User-Agent值长什么样我们可能并不记得，所以有了参数“–random-agent”，使用该参数，Sqlmap会从文件./txt/user-agents.txt中随机地取一个User-Agent。注意，在一次会话中只有使用同一个User-Agent，并不是每发一个HTTP请求包，都随机一个User-Agent。</p>
+<p>用如下命令统计user-agents.txt行数：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat sqlmap/txt/user-agents.txt | wc -l</span><br></pre></td></tr></table></figure>
+<p>结果为4211，当然其中还包含空行、注释等，但总的来说该文件中存储的User-Agent也有4千多个。</p>
+<p>当“–level”设置为3或更高时，Sqlmap会检测User-Agent是否存在注入漏洞，关于“–level”的更多信息见下文。</p>
+<p><strong><em>6.Host</em></strong><br><strong>参数：–host</strong><br>使用该参数可以手动指定HTTP头中的Host值。</p>
+<p>当“–level”设置为5或更高时，Sqlmap会检测Host是否存在注入漏洞，关于“–level”的更多信息见下文。</p>
+<p><strong><em>7.Referer</em></strong><br><strong>参数：–referer</strong><br>使用该参数可以指定HTTP头中的Referer值。Sqlmap发送的HTTP请求头部默认无Referer字段。</p>
+<p>当“–level”设置为3或更高时，Sqlmap会检测Referer是否存在注入漏洞，关于“–level”的更多信息见下文。</p>
+<p><strong><em>8.额外的HTTP头</em></strong><br><strong>参数：–headers</strong><br>使用该参数可以在Sqlmap发送的HTTP请求报文头部添加字段，若添加多个字段，用“\n”分隔。如命令：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.56.101:8080/"</span> -v 5 --headers <span class="hljs-string">"X-A:A\nX-B: B"</span></span><br></pre></td></tr></table></figure>
+<p>发送的HTTP请求包为：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET / HTTP/1.1</span><br><span class="line">X-B: B</span><br><span class="line">Host: 192.168.56.101:8080</span><br><span class="line">Accept-encoding: gzip,deflate</span><br><span class="line">X-A: A</span><br><span class="line">Accept: */*</span><br><span class="line">User-agent: sqlmap/1.1.10#stable (http://sqlmap.org)</span><br><span class="line">Connection: close</span><br></pre></td></tr></table></figure>
+<p>加参数“-v 5”是为了让Sqlamp输出发送的HTTP请求包，便于我们观察。</p>
+<p><strong><em>9.身份认证</em></strong><br><strong>参数：–auth-type和–auth-cred</strong><br>这些参数用于进行身份认证。“–auth-type”用于指定认证方式，支持以下三种身份认证方式：</p>
+<pre><code>Basic
+Digest
+NTLM</code></pre><p>“–auth-cred”用于给出身份认证的凭证，格式是“username:password”。</p>
+<p>如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/mysql/basic/get_int.php?id=1"</span> --auth-type Basic --auth-cred <span class="hljs-string">"testuser:testpass"</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>10.基于证书的身份认证</em></strong><br><strong>参数：–auth-file</strong><br>若Web服务器要求客户端提供证书则可以使用此参数指定一个PEM格式的证书文件。我们知道SSL协议的客户端认证是可选的，实践中一般都只用服务器端提供自己的证书供客户端验证，很少要求客户端提供自己的证书。</p>
+<p><strong><em>11.忽略401</em></strong><br><strong>参数：–ignore-401</strong><br>使用该参数忽略401错误（未认证）。</p>
+<p><strong><em>12.HTTP(S)代理</em></strong><br><strong>参数：–proxy、–proxy-cred、–proxy-file和–ignore-proxy</strong><br>使用参数“–proxy”来设置一个HTTP(S)代理，格式是“http(s)://url:port”。若代理需要认证，使用参数“–proxy-cred”来提供认证凭证，格式是“username:password”。</p>
+<p>使用参数“–proxy-file”指定一个存储着代理列表的文件，Sqlmap会依次使用文件中的代理，当某个代理有任何连接问题时就会被弃用而换下一个代理。</p>
+<p>使用参数“–ignore-proxy”忽略本地代理设置。</p>
+<p><strong><em>13.Tor匿名网络</em></strong><br><strong>参数：–tor、–tor-type、–tor-port和–check-tor</strong><br>不管出于什么原因，如果想要保持匿名状态与其使用单个的HTTP(S)代理，不如安装类似Privoxy这样的软件按照Tor的安装指导配置一个Tor客户端。设置好后使用参数“–tor”让Sqlmap自动设置使用Tor代理。</p>
+<p>如果想要手动指定Tor的类型和端口可以使用参数“–tor-type”和“–tor-port”，如：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--tor-type=SOCKS5 --tor-port 9050</span><br></pre></td></tr></table></figure>
+<p>如果要求高度的匿名性可以使用参数“–check-tor”，加上该参数后Sqlmap会确保所有流量都走Tor代理，若Tor代理失效，Sqlmap会发出警告并退出。检测方法是访问Are you using Tor?</p>
+<p><strong><em>14.HTTP请求之间添加延迟</em></strong><br><strong>参数：–delay</strong><br>过于频繁地发送请求可能会被网站察觉或有其他不良后果。使用参数“–delay”来指定HTTP请求之间的延迟，单位为秒，类型是浮点数，如“–delay 1.5”表示延迟1.5秒。默认是没有延迟的。</p>
+<p><strong><em>15.超时</em></strong><br><strong>参数：–timeout</strong><br>超时时间默认为30秒，可以用参数“–timeout”指定超时时间，如“–timeout 44.5”表示设置超时时间为44.5秒。</p>
+<p><strong><em>16.超时后最大重试次数</em></strong><br><strong>参数：–retries</strong><br>超时后Sqlmap会进行重试，最大重试次数默认为3，可以用参数“–retries”指定最大重试次数。</p>
+<p><strong><em>17.随机化参数值</em></strong><br><strong>参数：–randomize</strong><br>使用该参数，Sqlmap会随机生成每次HTTP请求中参数的值，值的类型和长度依照于原始值。</p>
+<p><strong><em>18.用正则表达式过滤代理日志</em></strong><br><strong>参数：–scope</strong><br>指定一个Python正则表达式对代理日志进行过滤，只测试符合正则表达式的目标，如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -l burp.log --scope=<span class="hljs-string">"(www)?\.target\.(com|net|org)"</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>19.避免错误请求过多而被屏蔽</em></strong><br><strong>参数：–safe-url、–safe-post、–safe-req和–safe-freq</strong><br>有时服务器检测到某个客户端错误请求过多会对其进行屏蔽，而Sqlmap的测试往往会产生大量错误请求，为避免被屏蔽，可以时不时的产生几个正常请求以迷惑服务器。有以下四个参数与这一机制有关：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">–safe-url: 隔一会就访问一下的安全URL</span><br><span class="line">–safe-post: 访问安全URL时携带的POST数据</span><br><span class="line">–safe-req: 从文件中载入安全HTTP请求</span><br><span class="line">–safe-freq: 每次测试请求之后都会访问一下的安全URL</span><br></pre></td></tr></table></figure>
+<p>这里所谓的安全URL是指访问会返回200、没有任何报错的URL。相应地，Sqlmap也不会对安全URL进行任何注入测试。</p>
+<p><strong><em>20.关闭URL编码</em></strong><br><strong>参数：–skip-urlencode</strong><br>Sqlmap默认会对URL进行URL编码，可以使用该参数关闭URL编码。</p>
+<p><strong><em>21.绕过CSRF保护</em></strong><br><strong>参数：–csrf-token和–csrf-url</strong><br>现在有很多网站通过在表单中添加值为随机生成的token的隐藏字段来防止CSRF攻击，Sqlmap会自动识别出这种保护方式并绕过。但自动识别有可能失效，此时就要用到这两个参数。</p>
+<p>“–csrf-token”用于指定包含token的隐藏字段名，若这个字段名不是常见的防止CSRF攻击的字段名Sqlmap可能不能自动识别出，需要手动指定。如Django中该字段名为“csrfmiddlewaretoken”，明显与CSRF攻击有关。</p>
+<p>“–csrf-url”用于从任意的URL中回收token值。若最初有漏洞的目标URL中没有包含token值而又要求在其他地址提取token值时该参数就很有用。</p>
+<p><strong><em>22.强制使用SSL</em></strong><br><strong>参数：–force-ssl</strong></p>
+<p><strong><em>23.在每次请求前执行特定Python代码</em></strong><br><strong>参数：–eval</strong><br>直接看例子：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://www.target.com/vuln.php?id=1&amp;hash=c4ca4238a0b923820dcc509a6f75849b"</span> --<span class="hljs-built_in">eval</span>=<span class="hljs-string">"import hashlib;hash=hashlib.md5(id).hexdigest()"</span></span><br></pre></td></tr></table></figure>
+<p>每次返送请求前，Sqlmap都会依据id值重新计算hash值并更新GET请求中的hash值。</p>
+<h3 id="0x06-优化"><a href="#0x06-优化" class="headerlink" title="0x06 优化"></a>0x06 优化</h3><p>这些参数可以优化Sqlmap的性能。<br><strong><em>1.一键优化</em></strong><br><strong>参数：-o</strong><br>添加此参数相当于同时添加下列三个优化参数：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">–keep-alive</span><br><span class="line">–null-connection</span><br><span class="line">–threads=3 （如果没有设置一个更好的值）</span><br></pre></td></tr></table></figure>
+<p>这些参数具体含义见后文。</p>
+<p><strong><em>2.HTTP长连接</em></strong><br><strong>参数：–keep-alive</strong><br>该参数让Sqlmap使用HTTP长连接。该参数与“–proxy”矛盾。</p>
+<p><strong><em>3.HTTP空连接</em></strong><br><strong>参数：–null-connection</strong><br>有一种特殊的HTTP请求类型可以直接获得HTTP响应的大小而不用获得HTTP响应体。显然这在布尔型盲注中可以节约很大的带宽。当然这一技术是需要服务器端支持的。该参数与“–text-only”矛盾。<br><strong><em>4.HTTP并发</em></strong><br><strong>参数：–threads</strong><br>使用该参数指定Sqlmap可以达到的最大并发数。从性能和网站承受能力两方面考虑最大并发数不要超过10。</p>
+<h3 id="0x07-注入"><a href="#0x07-注入" class="headerlink" title="0x07 注入"></a>0x07 注入</h3><p>这些参数被用于指定要测试的参数、定制攻击荷载和选择篡改脚本。<br><strong><em>1.要测试的注入点</em></strong><br><strong>参数：-p和–skip</strong><br>默认情况下Sqlmap会测试所有GET参数和POST参数，当level大于等于2时会测试cookie参数，当level大于等于3时会测试User-Agent和Referer。实际上还可以手动指定一个以逗号分隔的、要测试的参数列表，该列表中的参数不受level限制。这就是“-p”的作用。</p>
+<p>举个例子，若想只测试GET参数“id”和User-Agent，则可以这么写：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-p &quot;id,user-agent&quot;</span><br></pre></td></tr></table></figure>
+<p>如果不想测试某一参数则可以使用“–skip”。如设置了level为5但不想测试User-Agent和Referer，则可以这么写：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--level=5 --skip=&quot;user-agent,referer&quot;</span><br></pre></td></tr></table></figure>
+<p>有时会遇到伪静态网页。动态网页会明目张胆地列出参数，如：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/user.php?id=1</span><br></pre></td></tr></table></figure>
+<p>显然参数是id，值为1。但若是伪静态网页则可能这样写：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/user/1/</span><br></pre></td></tr></table></figure>
+<p>将参数隐藏在URL中。通常情况下Sqlmap不会对这样的伪静态网页的参数做测试，因为Sqlmap无法判断哪个是参数。若想要对这样的伪静态进行测试，只需要加上“*”，告诉Sqlmap哪个是伪静态参数就行，剩下事的和GET参数没有什么区别。如：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http(s)://target.cc/user/1*/"</span></span><br></pre></td></tr></table></figure>
+<p><strong><em>2.指定数据库管理系统</em></strong><br><strong>参数：–dbms</strong><br>dbms是“Database Management System”的缩写。默认情况下Sqlmap会自动检测网站使用的数据库管理系统，Sqlmap支持以下这些数据库管理系统：</p>
+<pre><code>MySQL
+Oracle
+PostgreSQL
+Microsoft SQL Server
+Microsoft Access
+Firebird
+SQLite
+Sybase
+SAP MaxDB
+DB2</code></pre><p>如果Sqlmap自动检测失败或是不想让Sqlmap进行数据库指纹检测，可以使用参数“–dbms”手动指定数据库管理系统，如：“–dbms postgresql”。</p>
+<p>对于Mysql和Microsoft SQL Server和要这样指定：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">--dbms MySQL &lt;version&gt;</span><br><span class="line">--dbms Microsoft SQL Server &lt;version&gt;</span><br></pre></td></tr></table></figure>
+<p>对于MySQL来说，是类似这样的：5.0。对于Microsoft SQL Server来说，是类似这样的：2005。</p>
+<p>如果在添加“–dbms”参数的同时还添加了“–fingerprint”，Sqlmap只会在指定的数据库管理系统内进行指纹识别。只有在很确定时使用“–dbms”，否则还是让Sqlmap自动检测更好些。</p>
+<p><strong><em>3.指定运行数据库管理系统的操作系统</em></strong><br><strong>参数：–os</strong><br>默认情况下Sqlmap会自动检测运行数据库管理系统的操作系统，目前完全支持的操作系统有：</p>
+<pre><code>Linux
+Windows</code></pre><p>如果很确定可以使用参数“–os”指定运行数据库管理系统的操作系统。当然在只用很确定时才应该使用此参数，否则还是让Sqlmap自动检测更好些。</p>
+<p><strong><em>4.生成无效参数值时强制使用大数</em></strong><br><strong>参数：–invalid-bignum</strong><br>有时在注入测试时需要生成无效参数，一般情况下Sqlmap会取已有参数（如：id=13）的相反数（如：id=-13）作为无效参数。但若添加“–invalid-bignum”，Sqlmap就会取大数（如：id=99999999）作为无效参数。</p>
+<p><strong><em>5.生成无效参数值时强制使用逻辑操作符</em></strong><br><strong>参数：–invalid-logical</strong><br>有时在注入测试时需要生成无效参数，一般情况下Sqlmap会取已有参数（如：id=13）的相反数（如：id=-13）作为无效参数。但若添加“–invalid-logical”，Sqlmap就会使用逻辑操作符（如：id=13 AND 18=19）作为无效参数。</p>
+<p><strong><em>6.生成无效参数值时强制使用字符串</em></strong><br><strong>参数：–invalid-string</strong><br>有时在注入测试时需要生成无效参数，一般情况下Sqlmap会取已有参数（如：id=13）的相反数（如：id=-13）作为无效参数。但若添加“–invalid-logical”，Sqlmap就会使用字符串（如：id=akewmc）作为无效参数。</p>
+<p><strong><em>7.关闭payload转换</em></strong><br><strong>参数：–no-cast</strong><br>在检索结果时Sqlmap会将所有输入转换为字符串类型，若遇到空值（NULL）则将其替换为空白字符。<br>这样做是为了防止如连接空值和字符串之类的任何错误发生并可以简化数据检索过程。<br>但是有报告显示在老版本的Mysql中这样做会导致数据检索出现问题，因此添加了“–no-cast”来告诉Sqlmap不要这样做。</p>
+<p><strong><em>8.关闭字符串编码</em></strong><br><strong>参数：–no-escape</strong><br>有时Sqlmap会使用用单引号括起来的字符串值作为payload，如“SELECT ‘foobar’”，默认地这些值会被编码，如上例将被编码为：<br>“SELECT CHAR(102)+CHAR(111)+CHAR(111)+CHAR(98)+CHAR(97)+CHAR(114))”。这样做既可以混淆视听让人一时难以洞察payload的内容又可以在后台服务器使用类似magic_quote或mysql_real_escape_string这样的转义函数的情况下字符串不受影响。当然在某些情况下需要关闭字符串编码，如为了缩减payload长度，用户可以使用“–no-escape”来关闭字符串编码。</p>
+<p><strong><em>9.定制payload</em></strong><br><strong>参数：–prefix和–suffix</strong><br>有时只有在payload后添加用户指定的后缀才能注入成功。另一种场景是用户已经知道查询语句怎么写的，此时可以直接指定payload的前缀和后缀来完成检测和注入。</p>
+<p>一个有漏洞的源码示例如下：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">query = <span class="hljs-string">"SELECT * FROM users WHERE id=('"</span> . $\_GET[<span class="hljs-string">'id'</span>] . <span class="hljs-string">"') LIMIT 0, 1"</span>;</span><br></pre></td></tr></table></figure>
+<p>对这样的例子可以让Sqlmap自动检测边界范围也可以手动指出边界范围：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.136.131/sqlmap/mysql/get_str_brackets.php?id=1"</span> -p id --prefix <span class="hljs-string">"')"</span> --suffix <span class="hljs-string">"AND ('abc'='abc"</span></span><br></pre></td></tr></table></figure>
+<p>最终SQL语句会变成：</p>
+<figure class="highlight sql hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">users</span> <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">id</span>=(<span class="hljs-string">'1'</span>) &lt;PAYLOAD&gt; <span class="hljs-keyword">AND</span> (<span class="hljs-string">'abc'</span>=<span class="hljs-string">'abc'</span>) <span class="hljs-keyword">LIMIT</span> <span class="hljs-number">0</span>, <span class="hljs-number">1</span></span><br></pre></td></tr></table></figure>
+<p>这个句子语法是正确的，payloa也能执行。</p>
+<p>在简单的测试环境下Sqlmap不需要被提供定制的边界范围就能够自动检测并完成注入，但在真实世界中某些应用可能会很复杂如嵌套JOIN查询，此时就需要为Sqlmap指明边界范围。</p>
+<p><strong><em>10.修改注入数据</em></strong><br><strong>参数：–tamper</strong><br>除了用CHAR()编码字符串外Sqlmap没有对payload进行任何混淆。<br>该参数用于对payload进行混淆以绕过IPS或WAF。<br>该参数后跟一个tamper脚本的名字。<br>若该tamper脚本位于sqlmap的安装目录的tamper/目录中，就可以省略路径和后缀名，只写文件名。<br>多个tamper脚本之间用空格隔开。</p>
+<p>在tamper/目录中有许多可用的tamper脚本。tamper脚本的作用是对payload进行混淆。<br>我们还可以自己写tamper脚本，这属于Sqlmap的高级用法，一个有效的tamper脚本如下所示：</p>
+<pre><code># 必须要导入的库
+from lib.core.enums import PRIORITY
+# 定义该tamper脚本的优先级
+__priority__ = PRIORITY.NORMAL
+def tamper(payload):
+  &apos;&apos;&apos;此处是tamper的说明&apos;&apos;&apos;
+  retVal = payload
+  # 此处是用于修改payload的代码
+  # 返回修改后的payload
+  return retVal</code></pre><p>下面是一个示例，该示例的目标是Mysql，假定大于号、空格和开头的SELECT是被禁止的：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python sqlmap.py -u <span class="hljs-string">"http://192.168.56.101:8080/ScorePrj/?id=1"</span> \</span><br><span class="line">--tamper tamper/between.py,tamper/randomcase.py,tamper/space2comment.py -v 3</span><br></pre></td></tr></table></figure>
+<p>该示例部分输出如下：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[12:55:52] [DEBUG] cleaning up configuration parameters</span><br><span class="line">[12:55:52] [INFO] loading tamper script <span class="hljs-string">'between'</span></span><br><span class="line">[12:55:52] [INFO] loading tamper script <span class="hljs-string">'randomcase'</span></span><br><span class="line">[12:55:52] [INFO] loading tamper script <span class="hljs-string">'space2comment'</span></span><br><span class="line">[...]</span><br><span class="line">[12:55:53] [INFO] testing <span class="hljs-keyword">for</span> SQL injection on GET parameter <span class="hljs-string">'id'</span></span><br><span class="line">[12:55:53] [INFO] testing <span class="hljs-string">'AND boolean-based blind - WHERE or HAVING clause'</span></span><br><span class="line">[12:55:53] [PAYLOAD] 1</span><br><span class="line">[12:55:53] [PAYLOAD] 1)/**/aNd/**/8083=4737/**/aNd/**/(4754/**/BetwEen/**/4754/**/aNd/**/4754</span><br><span class="line">[12:55:53] [PAYLOAD] 1)/**/anD/**/4962=4962/**/anD/**/(2361/**/BeTweEN/**/2361/**/anD/**/2361</span><br><span class="line">[12:55:53] [PAYLOAD] 1/**/aNd/**/9754/**/BETwEEn/**/1206/**/aNd/**/1206</span><br><span class="line">[12:55:53] [PAYLOAD] 1/**/AnD/**/4962/**/beTweEn/**/4962/**/AnD/**/4962</span><br><span class="line">[12:55:53] [PAYLOAD] 1/**/aND/**/2741/**/BetWeEn/**/9323/**/aND/**/9323--/**/Ihsa</span><br><span class="line">[12:55:53] [PAYLOAD] 1/**/anD/**/4962/**/BetweEN/**/4962/**/anD/**/4962--/**/wVUI</span><br><span class="line">[12:55:53] [PAYLOAD] 1<span class="hljs-string">')/**/anD/**/1694=6061/**/anD/**/('</span>zLwu<span class="hljs-string">'='</span>zLwu</span><br><span class="line">[12:55:53] [PAYLOAD] 1<span class="hljs-string">')/**/ANd/**/4962=4962/**/ANd/**/('</span>Dsfw<span class="hljs-string">'='</span>Dsfw</span><br><span class="line">[12:55:53] [PAYLOAD] 1<span class="hljs-string">'/**/aND/**/6307=8901/**/aND/**/'</span>fKLn<span class="hljs-string">'='</span>fKLn</span><br><span class="line">[12:55:53] [PAYLOAD] 1<span class="hljs-string">'/**/aNd/**/4962=4962/**/aNd/**/'</span>YFsp<span class="hljs-string">'='</span>YFsp</span><br><span class="line">[12:55:53] [PAYLOAD] 1%<span class="hljs-string">'/**/anD/**/3549=6854/**/anD/**/'</span>%<span class="hljs-string">'='</span></span><br><span class="line">[12:55:53] [PAYLOAD] 1%<span class="hljs-string">'/**/aND/**/4962=4962/**/aND/**/'</span>%<span class="hljs-string">'='</span></span><br><span class="line">[...]</span><br><span class="line">[12:55:54] [PAYLOAD] 1)/**/uNIoN/**/alL/**/Select/**/nuLl--/**/NRtq</span><br><span class="line">[12:55:54] [PAYLOAD] 1)/**/UnIOn/**/alL/**/sElEcT/**/nuLL,nuLL--/**/jalk</span><br><span class="line">[12:55:54] [PAYLOAD] 1)/**/Union/**/aLl/**/seLeCt/**/nuLL,nuLL,nuLL--/**/ylpg</span><br><span class="line">[...]</span><br></pre></td></tr></table></figure>
+<p>而若不加tamper脚本，上例的部分输出为：</p>
+<figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[...]</span><br><span class="line">  [13:00:12] [INFO] testing <span class="hljs-keyword">for</span> SQL injection on GET parameter <span class="hljs-string">'id'</span></span><br><span class="line">  [13:00:12] [INFO] testing <span class="hljs-string">'AND boolean-based blind - WHERE or HAVING clause'</span></span><br><span class="line">  [13:00:12] [PAYLOAD] 1) AND 9902=5632 AND (5820=5820</span><br><span class="line">  [13:00:12] [PAYLOAD] 1) AND 6711=6711 AND (7174=7174</span><br><span class="line">  [13:00:12] [PAYLOAD] 1 AND 7140=6136</span><br><span class="line">  [13:00:12] [PAYLOAD] 1 AND 6711=6711</span><br><span class="line">  [13:00:12] [PAYLOAD] 1 AND 1693=7532-- oqcR</span><br><span class="line">  [13:00:12] [PAYLOAD] 1 AND 6711=6711-- qAPJ</span><br><span class="line">  [13:00:12] [PAYLOAD] 1<span class="hljs-string">') AND 6904=7395 AND ('</span>xBlu<span class="hljs-string">'='</span>xBlu</span><br><span class="line">  [13:00:12] [PAYLOAD] 1<span class="hljs-string">') AND 6711=6711 AND ('</span>RgoX<span class="hljs-string">'='</span>RgoX</span><br><span class="line">  [13:00:12] [PAYLOAD] 1<span class="hljs-string">' AND 6469=7302 AND '</span>maCj<span class="hljs-string">'='</span>maCj</span><br><span class="line">  [13:00:12] [PAYLOAD] 1<span class="hljs-string">' AND 6711=6711 AND '</span>pSYg<span class="hljs-string">'='</span>pSYg</span><br><span class="line">  [13:00:12] [PAYLOAD] 1%<span class="hljs-string">' AND 7516=3605 AND '</span>%<span class="hljs-string">'='</span></span><br><span class="line">  [13:00:12] [PAYLOAD] 1%<span class="hljs-string">' AND 6711=6711 AND '</span>%<span class="hljs-string">'='</span></span><br><span class="line">  [...]</span><br><span class="line">  [13:00:12] [PAYLOAD] 1) UNION ALL SELECT NULL-- mUDh</span><br><span class="line">  [13:00:12] [PAYLOAD] 1) UNION ALL SELECT NULL,NULL-- QKId</span><br><span class="line">  [13:00:12] [PAYLOAD] 1) UNION ALL SELECT NULL,NULL,NULL-- iwvT</span><br><span class="line">  [...]</span><br></pre></td></tr></table></figure>
+<h3 id="0x08-总结"><a href="#0x08-总结" class="headerlink" title="0x08 总结"></a>0x08 总结</h3><p>后面命令行还有很多，多了我是有点看不下去的，所以分成三部分吧。</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/" rel="tag">工具手册</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/zfb.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat_pay.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/03/25/Sqlmap%E5%91%BD%E4%BB%A4%E8%A1%8C%EF%BC%88%E5%85%B6%E4%BA%8C%EF%BC%89/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Sqlmap命令行（其二）</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/03/20/Nmap%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E8%80%83/">
+                <span class="level-item">Nmap命令行参考</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/header.jpg" alt="F4Guo">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        F4Guo
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        懒是原罪
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>银河系 地球</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        38
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        5
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        7
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/fqguo" target="_blank" rel="noopener">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="Contact" href="https://www.f4guo.top/about/">
+                
+                <i class="far fa-envelope"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank"
+                title="RSS" href="/atom.xml">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">github.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://stickman.top" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">火柴人</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">stickman.top</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://jiucl.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">川落酒</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">jiucl.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.sec.kim/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">追光者</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.sec.kim</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="http://www.cnblogs.com/rakjong" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Rakjong</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.cnblogs.com</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">
+            <span class="level-start">
+                <span class="level-item">安全研究</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E5%BC%80%E5%8F%91/">
+            <span class="level-start">
+                <span class="level-item">开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+            <span class="level-start">
+                <span class="level-item">渗透测试</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">28</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%94%9F%E6%B4%BB%E6%97%A5%E5%B8%B8/">
+            <span class="level-start">
+                <span class="level-item">生活日常</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/%E7%BD%91%E7%BB%9C/">
+            <span class="level-start">
+                <span class="level-item">网络</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Android%E5%AE%89%E5%85%A8/" style="font-size: 10px;">Android安全</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 20px;">Web安全</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/web%E5%AE%89%E5%85%A8/" style="font-size: 10px;">web安全</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 10px;">信息收集</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/" style="font-size: 15px;">工具手册</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" style="font-size: 15px;">漏洞分析</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T06:26:02.000Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%81%A2%E5%A4%8D/" class="has-link-black-ter is-size-6">hexo博客的恢复</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T05:28:35.938Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/XSS/" class="has-link-black-ter is-size-6">XSS</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T08:40:24.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0XXE/" class="has-link-black-ter is-size-6">从零开始学习XXE</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T01:46:41.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/HTTP%E6%85%A2%E9%80%9F%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB/" class="has-link-black-ter is-size-6">HTTP慢速拒绝服务攻击</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-20T08:08:16.000Z">2019-09-20</time></div>
+                    <a href="/2019/09/20/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E5%85%A8%E8%BF%90%E7%BB%B4%E5%8F%8A%E5%8A%A0%E5%9B%BA/" class="has-link-black-ter is-size-6">Linux服务器安全运维及加固</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Android%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Android安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Web安全</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">web安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                        <span class="tag">信息收集</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/">
+                        <span class="tag">工具手册</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+                        <span class="tag">漏洞分析</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T06:26:02.000Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%81%A2%E5%A4%8D/" class="has-link-black-ter is-size-6">hexo博客的恢复</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-19T05:28:35.938Z">2019-11-19</time></div>
+                    <a href="/2019/11/19/XSS/" class="has-link-black-ter is-size-6">XSS</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T08:40:24.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0XXE/" class="has-link-black-ter is-size-6">从零开始学习XXE</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-10-09T01:46:41.000Z">2019-10-09</time></div>
+                    <a href="/2019/10/09/HTTP%E6%85%A2%E9%80%9F%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB/" class="has-link-black-ter is-size-6">HTTP慢速拒绝服务攻击</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/">安全研究</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-20T08:08:16.000Z">2019-09-20</time></div>
+                    <a href="/2019/09/20/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E5%85%A8%E8%BF%90%E7%BB%B4%E5%8F%8A%E5%8A%A0%E5%9B%BA/" class="has-link-black-ter is-size-6">Linux服务器安全运维及加固</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Android%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Android安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">Web安全</span>
+                        <span class="tag is-grey">20</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/web%E5%AE%89%E5%85%A8/">
+                        <span class="tag">web安全</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                        <span class="tag">信息收集</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E5%B7%A5%E5%85%B7%E6%89%8B%E5%86%8C/">
+                        <span class="tag">工具手册</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+                        <span class="tag">漏洞分析</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.ico" alt="Sqlmap命令行（其一）" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 锅哥&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" target="_blank" rel="noopener">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;" target="_blank" rel="noopener">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

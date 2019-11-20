@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="锅哥">
+    
+    <meta name="description" content="不会测试的程序员不是一个好的攻城狮">
+    
+    
+    
+    
+    
+    
+    <title>正则表达式模式 | 锅哥的日常</title>
+    <!-- inject:style -->
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <!-- endinject -->
+    <style>
+        .cube-loading {
+            top: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url('/images/lg/loading.gif') no-repeat center center;
+            background-color: rgba(0,0,0,.7);
+        }
+
+        .cube-loading.out {
+            display: none;
+        }
+
+        .cube-loading:before {
+            display: block;
+            content: 'Loading';
+            position: relative;
+            width: 100%;
+            top: 50%;
+            right: -50%;
+            color: #fff;
+        }
+
+        @media(max-width: 768px) {
+            .cube-loading:before {
+                font-size: 1.2em;
+                transform: translate(-24px,20px);
+                -webkit-transform: translate(-24px,20px);
+                -o-transform: translate(-24px,20px);
+                -ms-transform: translate(-24px,20px);
+            }
+        }
+
+        @media(min-width: 768px) {
+            .cube-loading:before {
+
+            }
+        }
+    </style>
+    
+</head>
+<body>
+<div class="cube-body">
+    <nav id="cube-top-memu" class="cube-menu">
+    <ul class="cube-menu-collapse">
+        
+        <li>
+            <i class="cube-icon cube-icon-home" aria-hidden="true"></i>
+            <a href="/">首页</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-archive" aria-hidden="true"></i>
+            <a href="/archives">归档</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-categories" aria-hidden="true"></i>
+            <a href="/categories">分类</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-tags" aria-hidden="true"></i>
+            <a href="/tags">标签</a>
+        </li>
+        
+        <li>
+            <i class="cube-icon cube-icon-about" aria-hidden="true"></i>
+            <a href="/about-me">关于我</a>
+        </li>
+        
+    </ul>
+</nav>
+
+
+    <header class="cube-header" id="cube-header">
+    <img src=" https://www.f4guo.top/images/1.jpg " alt="头部背景图片">
+    
+    <div class="cube-type">
+        <span class="cube-typed-title">锅哥的日常</span>
+        <span class="cube-typed-cursor">|</span>
+    </div>
+    
+</header>
+
+    <style>
+        nav.cube-menu:before {
+            content: '';
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 44px;
+        
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+        
+            z-index: -1;
+            background-image: url('https://www.f4guo.top/images/1.jpg');
+            background-repeat: no-repeat;
+            background-position: center 44px;
+            background-size: cover;
+            background-color: transparent;
+        }
+
+        header.cube-background.cube-header-background {
+            visibility: hidden;
+            background-image: url('https://www.f4guo.top/images/1.jpg');
+            background-position: center 0;
+        }
+    </style>
+    <header class="cube-background cube-header-background">
+        
+        <div class="cube-type">
+            <span class="cube-typed-title">锅哥的日常</span>
+            <span class="cube-typed-cursor">|</span>
+        </div>
+        
+    </header>
+    <div class="load-header-background"></div>
+    <script>
+        (function (window) {
+
+            window.headerModule = {}
+            window.headerModule.image = {
+                width: '500',
+                height: '346'
+            }
+
+        })(window)
+    </script>
+    
+    <div class="cube-content">
+        <div class="cube-left">
+            <div class="cube-article">
+    <h1 class="title">正则表达式模式</h1>
+    
+    <div class="cube-article-header">
+        <div class="cube-article-date">
+            <i class="cube-icon cube-icon-date" aria-hidden="true"></i>
+            <!-- moment.js对象 -->
+            2018-10-03
+        </div>
+        <div class="cube-article-tags">
+    <i class="cube-icon cube-icon-tag" aria-hidden="true"></i>
+    
+    <a href="/tags/python/">#python</a>
+    
+</div>
+    </div>
+    
+    <div class="cube-article-content cube-markdown">
+        
+        <h2 id="0x00-正则表达式的模式"><a href="#0x00-正则表达式的模式" class="headerlink" title="0x00 正则表达式的模式"></a>0x00 正则表达式的模式</h2><p>^        匹配字符串的开头。</p>
+<p>$        匹配字符串的结尾。</p>
+<p>.        匹配除了换行符的任意字符，但当re.DOTALL标记被指定时，则可以匹配包括换行符在内的任意字符。</p>
+<p>?        匹配前一个字符或子表达式0次或1次重复(非贪婪模式)。</p>
+<p>[…]    表示一组字符，单独列出：[amk]匹配”a”，”m”或”k”。</p>
+<p>[^…]    匹配不在[]中的字符：[^abc]匹配除了a，b，c之外的字符。</p>
+<p>re*        匹配0个或多个前面的字符或子表达式。</p>
+<p>re+        匹配1个或多个表达式。</p>
+<p>re?        匹配0个或1个由前面正则表达式定义的片段(非贪婪模式)。</p>
+<p>re{n}    精确匹配n个前面表达式。</p>
+<p>re{n,}     匹配n个前面的表达式。</p>
+<p>re{n,m}    匹配n到m次前面的表达式定义的片段，贪婪方式。</p>
+<p>a | b    匹配a或b。</p>
+<p>(re)    匹配括号内的表达式，也表示一个组。</p>
+<p>\w        匹配数字字母及下划线。</p>
+<p>\W         匹配非字母数字及下划线。</p>
+<p>\s         匹配任意空白字符，等价于[\t\n\r\f]。</p>
+<p>\S         匹配任意非空字符。</p>
+<p>\d         匹配任意数字，等价于[0-9]。</p>
+<p>\D         匹配任意非数字。</p>
+<p>\A         匹配字符串开始。</p>
+<p>\Z        匹配字符串结束，如果存在换行，只匹配到换行前的结束符。</p>
+<p>\z         匹配字符串结束。</p>
+<p>\G         匹配匹配最后完成的位置。</p>
+<p>\b         匹配一个单词的边界，就是单词和空格之间的位置。例如’er\b’可以匹配’never’中的’er’，但不能匹配’verb’中’er’。</p>
+<p>\B         匹配非单词边界，’er\B’能匹配’verb’中的’er’，不能匹配’never’中的’er’。</p>
+<p>\n,\t     匹配换行符或制表符。</p>
+<p>\1…\9    匹配第n个分组的内容。</p>
+<p>正则表达式可以包含一些可选标志修饰符来控制匹配的模式。修饰符被指定为一个可选的标志。多个标志可以通过按位 OR(|) 它们来指定。如 re.I | re.M 被设置成 I 和 M 标志：<br>修饰符    描述<br>re.I    使匹配对大小写不敏感。<br>re.L    做本地化识别（locale-aware）匹配。<br>re.M    多行匹配，影响 ^ 和 $。<br>re.S    DOTALL模式，使 “.” 匹配包括换行在内的所有字符。<br>re.U    根据Unicode字符集解析字符。这个标志影响 \w, \W, \b, \B。<br>re.X    该标志通过给予你更灵活的格式以便你将正则表达式写得更易于理解。</p>
+<p>(?imx)    正则表达式包含三种可选标志：i, m, 或 x 。只影响括号中的区域。<br>(?-imx)    正则表达式关闭 i, m, 或 x 可选标志。只影响括号中的区域。<br>(?: re)    类似 (…), 但是不表示一个组。<br>(?imx: re)    在括号中使用i, m, 或 x 可选标志。<br>(?-imx: re)    在括号中不使用i, m, 或 x 可选标志。<br>(?#…)    注释.<br>(?= re)    前向肯定界定符。如果所含正则表达式，以 … 表示，在当前位置成功匹配时成功，否则失败。但一旦所含表达式已经尝试，匹配引擎根本没有提高；模式的剩余部分还要尝试界定符的右边。<br>(?! re)    前向否定界定符。与肯定界定符相反；当所含表达式不能在字符串当前位置匹配时成功。<br>(?&gt; re)    匹配的独立模式，省去回溯。</p>
+<h2 id="正则表达式-中级："><a href="#正则表达式-中级：" class="headerlink" title="正则表达式-中级："></a>正则表达式-中级：</h2><p>1.子表达式</p>
+<p>对于192.168.10.1这样的地址如何写表达式呢？<br>常规写法：\d+.?\d+.?\d+.?\d+，但这种太繁琐，而且控制不了位数。再就是：\d+{1,3}.?\d+{1,3}.?\d+{1,3}.?\d+{1,3}。简便写法：(\d+{1,3}.){3}\d+{1,3}.<br>我们可以把几个字符组合用圆括号括起来，然后将圆括号内的内容当做一个整体字符。所以利用子表达式，将192.这种数字加小数点看做一个整体字符，规定其重复匹配的次数，高效又简洁。</p>
+<p>2.向前向后查找</p>
+<p>?&lt;=后面跟着的是前缀要求，?=后面跟的是后缀要求。字符串”string”，匹配”rin”，r”(?&lt;=t)xx(?=g)”。</p>
+<p>3.回溯引用</p>
+<p>对于正则表达式：[ ]+(\w+)[ ]+\1，(\w+)是一个子表达式，这个子表达式不是用来进行重复匹配的，只是把整个模式的一部分单独划分出来以便在后面引用。<br>\1这是一个回溯引用，而它引用的正是前面划分出来的子表达式（即子表达式：(\w+)），\1它代表着模式里的第一个子表达式，\2代表着模式里的第二个子表达式，\3代表着模式里的第三个子表达式；以此类推。<br>[ ]+(\w+)[ ]+\1将匹配同一个单词的连续两次重复出现，而且前面一个是一个单独的词，至少前面有一个空格。</p>
+
+    </div>
+</div>
+
+<div class="cube-article-nav">
+    <ul>
+        
+        <li class="prev">
+            <a href="/2018/10/03/json劫持/">
+                <i class="cube-icon cube-prev" aria-hidden="true"></i>
+                json劫持
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2018/09/22/常见的XSS利用场景/">
+                常见的XSS利用场景
+                <i class="cube-icon cube-next" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+<!-- TODO 根据theme.comment的内容进行入口选择 -->
+
+
+
+        </div>
+        <div class="cube-right">
+            
+
+<div class="cube-search cube-sidebar" id="cube-search">
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="cube-search-input" id="cube-search-input">
+        <i class="cube-icon cube-icon-search cube-search-submit" aria-hidden="true"></i>
+    </div>
+    <!-- TODO 通过给window赋一个全局变量，通过脚本赋值 -->
+</div>
+<script>
+    (function (window) {
+        'use strict';
+        window.searchModule = {}
+        window.searchModule.JSONUrl = '/content.json'
+        window.searchModule.rootUrl = '/'
+    })(window)
+</script>
+<div class="cube-search-form">
+    <div class="cube-search-control">
+        <input type="text" placeholder="Search" class="search-input">
+        <a class="close-button">
+            <i class="cube-icon cube-close" aria-hidden="true"></i>
+        </a>
+    </div>
+    <div class="cube-search-result"></div>
+</div>
+
+
+<div class="cube-author cube-sidebar" id="cube-author">
+    
+    
+    <span>锅哥</span>
+    
+    
+    <a title="不会测试的程序员不是一个好的攻城狮">不会测试的程序员不是一个好的攻城狮</a>
+    
+    <div class="count">
+        <a class="count articles"><span>6</span>Article</a>
+        <a class="count tags"><span>3</span>Tags</a>
+        <a class="count categories"><span>3</span>Categories</a>
+    </div>
+</div>
+
+
+
+
+
+<div class="cube-recent-posts cube-sidebar" id="cube-recent-posts">
+    <div class="title">
+        <a>Recent Posts</a>
+    </div>
+    <ul class="list">
+        
+        
+        <li>
+            <!-- TODO 如果文章要显示图片，那么在front-matter上添加preview属性(url or path) -->
+            
+            <div class="normal">
+                <p class="index first">
+                    <span>1</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/11/11/CDN下的真实IP/" title="CDN下的真实IP">CDN下的真实IP</a>
+                </p>
+            </div>
+            
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>2</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/10/09/hello-world/" title="Hello Guys!!!">Hello Guys!!!</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>3</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/10/03/json劫持/" title="json劫持">json劫持</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>4</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/10/03/正则表达式模式/" title="正则表达式模式">正则表达式模式</a>
+                </p>
+            </div>
+        </li>
+        
+        
+        
+        <li>
+            <div class="normal">
+                <p class="index">
+                    <span>5</span>
+                </p>
+                <p class="title">
+                    <a href="/2018/09/22/常见的XSS利用场景/" title="常见的XSS利用场景">常见的XSS利用场景</a>
+                </p>
+            </div>
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-categories cube-sidebar" id="cube-categories">
+    <div class="title">
+        <a href="/categories">Categories</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/categories/信息安全/">#信息安全</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/瞎扯淡/">#瞎扯淡</a>
+        </div>
+        
+        
+        <div class="cube-box-bg ">
+            <a href="/categories/编程/">#编程</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-tagcloud cube-sidebar" id="cube-tagcloud">
+    <div class="title">
+        <a href="/tags">Tagcloud</a>
+    </div>
+    <div class="cube-boxs">
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/web安全/">#web安全</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/日常/">#日常</a>
+        </div>
+        
+        
+        <div class="cube-box ">
+            <a href="/tags/python/">#python</a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="cube-links cube-sidebar" id="cube-links">
+    <div class="title">
+        <a>Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            
+            
+            <img src="http://cube-1252774894.cosgz.myqcloud.com/links/GitHub.png">
+            
+            <a href="https://github.com/fqguo/fqguo.github.io" target="_blank">GitHub</a>
+        </li>
+        
+        <li>
+            
+            
+            <img src="/images/CSDN.jpg">
+            
+            <a href="https://blog.csdn.net/qq_gfq?t=1&amp;orderby=UpdateTime" target="_blank">CSDN</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+<div class="cube-friend-links cube-sidebar" id="cube-friend-links">
+    <div class="title">
+        <a>Friend Links</a>
+    </div>
+    <ul class="list">
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="https://www.f4guo.top/images/tx.jpg">
+            <a href="https://www.f4guo.top" target="_blank">锅哥的日常</a>
+        </li>
+        
+        <li>
+            <!-- TODO change avatar.png to friend.png-->
+            <img src="http://stickman.top/imagess/lufei.jpg">
+            <a href="http://stickman.top" target="_blank">火柴人的小窝</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+    </div>
+</div>
+<footer class="cube-footer">
+    
+© 2018 锅哥
+
+<br>
+Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>.&nbsp;Theme by <a href="https://github.com/ZEROKISEKI" target="_blank">AONOSORA</a>
+
+</footer>
+<!-- inject:script -->
+<script src="/js/script.js"></script>
+<!-- endinject -->
+<div class="cube-loading out"></div>
+</body>
+</html>
