@@ -7,18 +7,18 @@
 
 
 
-    <meta name="description" content="只是因为想你了。。。。  0x00 批量修改文件后缀在需要修改后缀名的同目录下新建一个bat文件(后缀名为.bat)，内容为:ren *.log *.txt保存点击bat文件运行即可修改该目录下所有.log文件为.txt文件。 0x01 批量修改文件编码格式偶然间发现Editplus是个不错的软件，这里可以批量修改文件的编码格式 EditPlus（文字编辑器）汉化版是一套功能强大，可取代记事本的">
+    <meta name="description" content="只是因为想你了。。。。  0x00 批量修改文件后缀在需要修改后缀名的同目录下新建一个bat文件(后缀名为.bat)，内容为:ren *.log *.txt保存点击bat文件运行即可修改该目录下所有.log文件为.txt文件。">
 <meta name="keywords" content="Web安全">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一次尝试日志分析">
 <meta property="og:url" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;2020&#x2F;03&#x2F;04&#x2F;%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%B0%9D%E8%AF%95%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90&#x2F;index.html">
 <meta property="og:site_name" content="锅哥的日常">
-<meta property="og:description" content="只是因为想你了。。。。  0x00 批量修改文件后缀在需要修改后缀名的同目录下新建一个bat文件(后缀名为.bat)，内容为:ren *.log *.txt保存点击bat文件运行即可修改该目录下所有.log文件为.txt文件。 0x01 批量修改文件编码格式偶然间发现Editplus是个不错的软件，这里可以批量修改文件的编码格式 EditPlus（文字编辑器）汉化版是一套功能强大，可取代记事本的">
+<meta property="og:description" content="只是因为想你了。。。。  0x00 批量修改文件后缀在需要修改后缀名的同目录下新建一个bat文件(后缀名为.bat)，内容为:ren *.log *.txt保存点击bat文件运行即可修改该目录下所有.log文件为.txt文件。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;dxlog1.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;dx.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;dxlog2.png">
-<meta property="og:updated_time" content="2020-03-28T10:35:57.732Z">
+<meta property="og:updated_time" content="2020-03-28T10:38:09.905Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;dxlog1.png">
 
@@ -147,7 +147,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    3 分钟 读完 (大约 393 个字)
+                    3 分钟 读完 (大约 394 个字)
                 </span>
                 
             </div>
@@ -163,6 +163,7 @@
 <p><font color="#87CEFF" size="2">只是因为想你了。。。。</font></p>
 </blockquote>
 <h3 id="0x00-批量修改文件后缀"><a href="#0x00-批量修改文件后缀" class="headerlink" title="0x00 批量修改文件后缀"></a>0x00 批量修改文件后缀</h3><p>在需要修改后缀名的同目录下新建一个bat文件(后缀名为.bat)，内容为:<br>ren *.log *.txt<br>保存点击bat文件运行即可修改该目录下所有.log文件为.txt文件。</p>
+<a id="more"></a>
 <h3 id="0x01-批量修改文件编码格式"><a href="#0x01-批量修改文件编码格式" class="headerlink" title="0x01 批量修改文件编码格式"></a>0x01 批量修改文件编码格式</h3><p>偶然间发现Editplus是个不错的软件，这里可以批量修改文件的编码格式</p>
 <pre><code>EditPlus（文字编辑器）汉化版是一套功能强大，可取代记事本的文字编辑器，拥有无限制的撤消与重做、英文拼字检查、自动换行、列数标记、搜寻取代、同时编辑多文件、全屏幕浏览功能。而它还有一个好用的功能，就是它有监视剪贴板的功能，同步于剪贴板可自动粘贴进 EditPlus 的窗口中省去粘贴的步骤。</code></pre><p>本来想重点记录一下这个工具的使用过程的，无奈工作做完之后，后来想不起来安装在哪儿了<br>可参考<a href="https://www.iteye.com/blog/fableking-1831343" target="_blank" rel="noopener">https://www.iteye.com/blog/fableking-1831343</a></p>
 <h3 id="0x02-编写脚本处理"><a href="#0x02-编写脚本处理" class="headerlink" title="0x02 编写脚本处理"></a>0x02 编写脚本处理</h3><p>python写了一个简陋的过滤脚本，不得不说，自动化确实香<br><img src="/images/paperimage/dxlog1.png" alt><br>主要关键字查找<br><img src="/images/paperimage/dx.png" alt><br><img src="/images/paperimage/dxlog2.png" alt><br>查询sqlmap的特征字符，未发现有dump数据的情况，后面就是差不多改脚本，重复过滤关键字的过程了</p>
